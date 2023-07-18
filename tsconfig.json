@@ -1,0 +1,11 @@
+{
+	"compilerOptions": {
+		"baseUrl": "src",
+		"target": "ES6",
+		"module": "NodeNext",
+		"moduleResolution": "Node",
+		"skipLibCheck": true,
+		"jsx": "react"
+	},
+	"include": ["src/**/*"]
+}
