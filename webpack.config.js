@@ -3,7 +3,7 @@ const { EsbuildPlugin } = require("esbuild-loader");
 
 module.exports = {
 	entry: {
-		app: "./src/index.js",
+		app: "./src/index.tsx",
 	},
 	module: {
 		rules: [
@@ -25,6 +25,15 @@ module.exports = {
 				exclude: /node_modules/,
 			},
 			{
+				test: /\.tsx?$/,
+				loader: "esbuild-loader",
+				options: {
+					target: "es6",
+					loader: "tsx",
+				},
+				exclude: /node_modules/,
+			},
+			{
 				test: /\.s[ac]ss?$/,
 				use: [
 					"style-loader",
@@ -41,6 +50,9 @@ module.exports = {
 				],
 			},
 		],
+	},
+	resolve: {
+		extensions: [".ts", ".tsx", ".js", ".jsx"]
 	},
 	output: {
 		filename: "[name].bundle.js",

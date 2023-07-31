@@ -39,6 +39,8 @@
 		]
 	},
 	"devDependencies": {
+		"@types/react": "^18.2.17",
+		"@types/react-dom": "^18.2.7",
 		"@types/styled-components": "^5.1.26",
 		"css-loader": "^6.8.1",
 		"esbuild-loader": "^3.0.1",
@@ -50,6 +52,7 @@
 		"stylelint-config-standard-scss": "^10.0.0",
 		"stylelint-custom-processor-loader": "^0.6.0",
 		"terser-webpack-plugin": "^5.3.9",
+		"ts-loader": "^9.4.4",
 		"webpack": "^5.88.2",
 		"webpack-cli": "^5.1.4",
 		"webpack-dev-server": "^4.15.1",
