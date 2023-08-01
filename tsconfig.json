@@ -1,27 +1,18 @@
 {
-    "compilerOptions": {
-        "baseUrl": ".",
-        "target": "ES6",
-        "lib": [
-            "DOM",
-            "DOM.Iterable",
-            "ESNext"
-        ],
-        "moduleResolution": "Node",
-        "module": "ESNext",
-        "jsx": "react",
-        "esModuleInterop": true,
-        // CommonJS/AMD/UMD 파일들을 ES6의 모듈과 같이 사용이 가능하게끔 바꿔주는 기능을 한다. 예를 들어 import * as moment from "moment"는 const moment = require("moment")와 같이 사용되게끔 만드는 기능이다. 
-        "isolatedModules": true,
-        "allowSyntheticDefaultImports": true,
-        // import * as React from "react"로 import해야 하는 것들을 import React from "react"로 사용할 수 있게끔 만들어준다. babel과 같은 컴파일러를 이용하게 될 시 자동으로 default export module이 없더라도 만들어서 제공하는 기능이 있다. 이러한 컴파일러 기능을 원활하게 사용하기 위해서는 이 기능을 켜줄 필요가 있다. 
-        "noUnusedParameters": true,
-    },
-    "include": [
-        "src"
-    ],
-    "exclude": [
-        "node_modules",
-        "build"
-    ]
+	"compilerOptions": {
+		"baseUrl": ".",
+		"target": "ES6",
+		"lib": ["DOM", "DOM.Iterable", "ESNext"],
+		"moduleResolution": "Node",
+		"module": "ESNext",
+		"jsx": "react",
+		"esModuleInterop": true,
+		// CommonJS/AMD/UMD 파일들을 ES6의 모듈과 같이 사용이 가능하게끔 바꿔주는 기능을 한다. 예를 들어 import * as moment from "moment"는 const moment = require("moment")와 같이 사용되게끔 만드는 기능이다.
+		"isolatedModules": true,
+		"allowSyntheticDefaultImports": true,
+		// import * as React from "react"로 import해야 하는 것들을 import React from "react"로 사용할 수 있게끔 만들어준다. babel과 같은 컴파일러를 이용하게 될 시 자동으로 default export module이 없더라도 만들어서 제공하는 기능이 있다. 이러한 컴파일러 기능을 원활하게 사용하기 위해서는 이 기능을 켜줄 필요가 있다.
+		"noUnusedParameters": true
+	},
+	"include": ["src"],
+	"exclude": ["node_modules", "build"]
 }

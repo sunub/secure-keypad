@@ -1,5 +1,7 @@
 import React from "react";
 import styled from "styled-components";
+import PageLayout from "./components/PageLayout";
+import KeypadPage from "./pages/KeypadPage";
 
 const Global = styled.div`
 	width: 100%;
@@ -9,8 +11,9 @@ const Global = styled.div`
 export default function App() {
 	return (
 		<Global>
-			<h1>HI!</h1>
-			<p>Hello World!</p>
+			<PageLayout>
+				<KeypadPage />
+			</PageLayout>
 		</Global>
 	);
 }
