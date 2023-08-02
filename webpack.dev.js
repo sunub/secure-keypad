@@ -14,7 +14,7 @@ module.exports = merge(common, {
 	],
 	devServer: {
 		hot: true,
-		port: 3000,
+		port: 3001,
 		host: "0.0.0.0",
 		static: {
 			directory: path.join(__dirname, "public"),

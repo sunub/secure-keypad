@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import PageLayout from "./components/PageLayout";
 import KeypadPage from "./pages/KeypadPage";
+import KeyPad from "./components/Keypad/KeyPad";
 
 const Global = styled.div`
 	width: 100%;
