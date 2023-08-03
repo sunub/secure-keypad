@@ -7,14 +7,14 @@ export default function KeypadProvider({ children }: { children: React.ReactNode
 
     const contextValue = React.useMemo(() => {
         function setFocusStatus(isFocus: boolean, id: string) {
-            const statusContainer = document.querySelector(`.${id}`) as HTMLElement;
-            const keypad = document.querySelector(`#${id}-keypad[aria-hidden]`)
+            const currStatus = document.querySelector(`#${id}`) as HTMLElement;
+            const keypad = document.querySelector(`.${id}--keypad[aria-hidden]`)
 
             const properties = ["aria-label", "aria-hidden"];
             const status = isFocus ? "Close Keypad" : "Open Keypad";
             const value = isFocus ? "true" : "false";
 
-            statusContainer.setAttribute(properties[0], status);
+            currStatus.setAttribute(properties[0], status);
             keypad.setAttribute(properties[1], value)
             setFocus(!isFocus)
         }

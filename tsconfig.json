@@ -5,7 +5,7 @@
 		"lib": ["DOM", "DOM.Iterable", "ESNext"],
 		"moduleResolution": "Node",
 		"module": "ESNext",
-		"jsx": "react",
+		"jsx": "react-jsx",
 		"esModuleInterop": true,
 		// CommonJS/AMD/UMD 파일들을 ES6의 모듈과 같이 사용이 가능하게끔 바꿔주는 기능을 한다. 예를 들어 import * as moment from "moment"는 const moment = require("moment")와 같이 사용되게끔 만드는 기능이다.
 		"isolatedModules": true,

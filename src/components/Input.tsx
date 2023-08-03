@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, InputHTMLAttributes, MutableRefObject, ReactNode, RefObject, forwardRef } from "react"
+import React, { HTMLAttributes, InputHTMLAttributes, MutableRefObject, ReactNode, Children, forwardRef, cloneElement } from "react"
 import styled from "styled-components"
 import { KeypadContext } from "./Context/KeypadProvider"
 
@@ -15,20 +15,31 @@ const InputPadNumber = styled.input`
     font-size: 2rem;
 `
 
+const BottomText = styled.span`
+    display: none;
+`
+
 interface InputProps extends HTMLAttributes<HTMLDivElement> {
-    className: string;
+    name: string;
     label?: ReactNode;
-    children: React.ReactNode;
+    children: React.ReactElement;
     bottomText?: string;
 }
 
-export default function Input({ className, label, children }: InputProps) {
+export default function Input({ name, label, children, bottomText }: InputProps) {
+    const child = Children.only(children);
+
     return (
-        <Container className={className} aria-label={`Close Keypad`}>
-            <Label>
-                {label}
+        <Container>
+            <Label htmlFor={`${name}-input`}>
+                비밀번호
             </Label>
-            {children}
+            {cloneElement(child, { name, ...child.props })}
+            {bottomText !== null ? (
+                <BottomText className="bottom-text">
+                    {bottomText}
+                </BottomText>
+            ) : null}
         </Container>
     )
 }
@@ -42,25 +53,29 @@ Input.TextField = forwardRef(
         ref: MutableRefObject<HTMLInputElement>) => {
         const { isFocus, setFocusStatus } = React.useContext(KeypadContext);
         const [status, setStauts] = React.useState("Close");
+        const id = `${props.id}-input`;
 
         React.useEffect(() => {
-            const statusContainer = document.querySelector(`.${props.id}`) as HTMLElement
+            const statusContainer = document.querySelector(`#${props.id}`) as HTMLElement
             const currStatus = statusContainer.getAttribute("aria-label");
 
             const value = currStatus === "Close Keypad" ? "Close" : "Open"
             setStauts(value)
         }, [isFocus])
 
-        return (
+        return (<>
             <InputPadNumber
-                id={props.id}
+                id={id}
                 ref={ref}
-                {...props}
-                onFocus={(e) => {
-                    const id = e.currentTarget.getAttribute("id")
-                    setFocusStatus(isFocus, id)
+                onFocus={() => {
+                    const btm = document.querySelector(".bottom-text") as HTMLElement;
+                    btm.style.display = "block";
+                    setFocusStatus(isFocus, props.id);
                 }}
-                defaultValue={status === "Close" ? null : "HI"}
+                defaultValue={status === "Close" ? null : "******"}
+                aria-label="비밀번호"
+                readOnly
             />
-        )
+            {status === "Close" ? null : <p>6자리로 입력해주세요</p>}
+        </>)
     })
