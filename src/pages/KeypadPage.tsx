@@ -1,10 +1,9 @@
-import React, { MutableRefObject, RefObject } from "react"
+import React from "react"
 import Txt from "../components/Txt"
-import KeypadProvider from "../components/Context/KeypadProvider";
-import SecureKeypad from "../components/SecureKeypad";
+import KeypadProvider, { KeypadContext } from "../components/Context/KeypadProvider";
+import SecureKeypad from "../components/SecureKeypad/SecureKeypad";
 
 export default function KeypadPage() {
-    const inputRef = React.useRef<HTMLInputElement>(null);
 
     return (
         <>
@@ -12,8 +11,7 @@ export default function KeypadPage() {
                 Secure Keypad
             </Txt>
             <KeypadProvider>
-                <SecureKeypad uses="insert" />
-                {/* <SecureKeypad uses="confirm" /> */}
+                <SecureKeypad />
             </KeypadProvider>
         </>
     )

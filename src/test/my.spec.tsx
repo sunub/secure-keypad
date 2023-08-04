@@ -34,14 +34,11 @@ describe("Studying how do it work", () => {
     test("확인 버튼 클릭시 텍스트 지우기", async () => {
         render(<App />)
 
+        userEvent.click(await screen.findByLabelText<HTMLInputElement>(`비밀번호`))
+        expect(await screen.queryByText(/Open/)).toBeInTheDocument
+
         userEvent.click(await screen.findByText("확인"));
         await delay(100);
-
         expect(await screen.queryByText(/Open/)).not.toBeInTheDocument
-    })
-    test("id 확인", async () => {
-        render(<App />)
-
-        expect(await screen.findByTestId("insert-string")).toBeInTheDocument();
     })
 })  

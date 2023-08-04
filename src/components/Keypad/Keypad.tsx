@@ -16,12 +16,17 @@ const Container = styled.div`
     background: gray;
 `
 
-export default function KeyPad({ className }: { className: string }) {
+type KeypadProps = {
+    className: string,
+    inputRef: React.MutableRefObject<HTMLInputElement>
+}
+
+export default function KeyPad({ className, inputRef }: KeypadProps) {
     const [dataLength, setDataLength] = React.useState(0);
     const padButtons = React.useMemo(createPadButtons, []);
-    console.log(dataLength);
+
     return (
-        <Container className={`${className}--keypad`} aria-hidden={true} >
+        <Container id={`${className}--keypad`} aria-hidden={true} >
             <NumKeypad className={className} numpadButton={padButtons.numpad} update={setDataLength} />
             <FunctionKeypad dataLength={dataLength} className={className} />
         </Container>

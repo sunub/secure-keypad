@@ -2,25 +2,32 @@ import React, { useState } from "react";
 
 export const KeypadContext = React.createContext(null);
 
+type FocusType = {
+    isFocus: boolean,
+    curr: string
+}
+
+type StatusProvider = {
+    status: FocusType
+    setCurrentStatus: (isFocus: boolean, id: string) => void
+}
+
 export default function KeypadProvider({ children }: { children: React.ReactNode }) {
-    const [isFocus, setFocus] = useState(false);
+    const [status, setStatus] = useState<FocusType>({ isFocus: false, curr: null });
+
 
     const contextValue = React.useMemo(() => {
-        function setFocusStatus(isFocus: boolean, id: string) {
-            const currStatus = document.querySelector(`#${id}`) as HTMLElement;
-            const keypad = document.querySelector(`.${id}--keypad[aria-hidden]`)
-
-            const properties = ["aria-label", "aria-hidden"];
-            const status = isFocus ? "Close Keypad" : "Open Keypad";
-            const value = isFocus ? "true" : "false";
-
-            currStatus.setAttribute(properties[0], status);
-            keypad.setAttribute(properties[1], value)
-            setFocus(!isFocus)
+        function setCurrentStatus(isFocus: boolean, id: string): StatusProvider {
+            setStatus((old) => {
+                old.isFocus = !isFocus;
+                old.curr = id
+                return old
+            });
+            return
         }
 
-        return { isFocus, setFocusStatus }
-    }, [isFocus, setFocus])
+        return { status, setCurrentStatus }
+    }, [status, setStatus])
 
     return (
         <KeypadContext.Provider value={contextValue}>

@@ -5,25 +5,64 @@ export function ThrowError() {
 }
 
 export function App() {
+    const [isClick, setClick] = React.useState(false);
+
     return (<>
         <label htmlFor="비밀번호">
             비밀번호
         </label>
         <input
-            onClick={(e) => {
+            onClick={() => {
                 const curr = document.querySelector("#insert-string") as HTMLElement
                 curr.innerHTML = "Open"
+                setClick(true)
             }}
             aria-label="비밀번호"
         />
-        <span data-testid="insert-string" id="insert-string" />
-        <button
-            onClick={() => {
-                const curr = document.querySelector("#insert-string") as HTMLElement
-                curr.innerHTML = ""
-            }}
-        >
-            확인
-        </button>
+        <span id="insert-string" />
+        {
+            isClick ? <button
+                id="insert-button"
+                onClick={() => {
+                    const curr = document.querySelector("#insert-string") as HTMLElement
+                    curr.innerHTML = ""
+                }}
+            >
+                확인
+            </button>
+                : null
+        }
+        <OtherComponent />
     </>)
+}
+
+function OtherComponent() {
+    const [isClick, setClick] = React.useState(false);
+
+    return (<div>
+        <label htmlFor="비밀번호 확인">
+            비밀번호
+        </label>
+        <input
+            onClick={() => {
+                const curr = document.querySelector("#insert-string-confirm") as HTMLElement
+                curr.innerHTML = "Open"
+                setClick(true);
+            }}
+            aria-label="비밀번호 확인"
+        />
+        <span id="insert-string-confirm" />
+        {
+            isClick ? <button
+                id="confirm-button"
+                onClick={() => {
+                    const curr = document.querySelector("#insert-string") as HTMLElement
+                    curr.innerHTML = ""
+                }}
+            >
+                확인
+            </button>
+                : null
+        }
+    </div>)
 }
