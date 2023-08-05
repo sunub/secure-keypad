@@ -25,7 +25,6 @@ export default function KeypadProvider({ children }: { children: React.ReactNode
             });
             return
         }
-
         return { status, setCurrentStatus }
     }, [status, setStatus])
 

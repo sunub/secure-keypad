@@ -1,7 +1,6 @@
 import React, { HTMLAttributes, InputHTMLAttributes, MutableRefObject, ReactNode, Children, forwardRef, cloneElement, useState } from "react"
 import styled from "styled-components"
 import { KeypadContext } from "../Context/KeypadProvider"
-import { createPortal } from "react-dom"
 
 const Container = styled.div`
     display: flex;
@@ -28,26 +27,27 @@ interface InputProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export default function Input({ id, label, children, bottomText }: InputProps) {
+    const { status, setCurrentStatus } = React.useContext(KeypadContext);
     const child = Children.only(children);
 
     return (
-        <Container aria-label="Close Keypad">
-            <Label htmlFor={id}>
+        <>
+            <Label htmlFor={id} >
                 {label}
             </Label>
             {cloneElement(child, { id, ...child.props })}
-            {bottomText !== null ? (
-                <BottomText className="bottom-text">
+            {/* {bottomText !== null ? (
+                <BottomText>
                     {bottomText}
                 </BottomText>
-            ) : null}
-        </Container>
+            ) : null} */}
+        </>
     )
 }
 
 interface TextFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
-    error?: boolean
-    setStatus: React.Dispatch<React.SetStateAction<boolean>>
+    error?: boolean,
+    setStatus: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
 Input.TextField = forwardRef(
@@ -62,9 +62,10 @@ Input.TextField = forwardRef(
                 onFocus={() => {
                     setCurrentStatus(status.isFocus, props.id);
                     setStatus(status.isFocus);
+                    // const currLabel = document.querySelector(`label[for=${props.id}]`)
+                    // currLabel.setAttribute("aria-label", "Open Keypad");
                 }}
                 readOnly
             />
-            {status === "Close" ? null : <p>6자리로 입력해주세요</p>}
         </>)
     })

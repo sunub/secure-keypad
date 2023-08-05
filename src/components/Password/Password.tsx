@@ -1,14 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Input from "./Input";
-import { styled } from "styled-components";
+import styled from "styled-components";
+import { KeypadContext } from "../Context/KeypadProvider";
+import KeyPad from "../Keypad/Keypad";
 
 type SecureKeypadProps = {
-    uses: string,
-    inputRef: React.MutableRefObject<HTMLInputElement>
-    setStatus: React.Dispatch<React.SetStateAction<boolean>>
+    uses: string;
+    inputRef: React.MutableRefObject<HTMLInputElement>;
+    setStatus: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+const KeypadLayout = styled.div<{ $hidden?: boolean }>`
+    display: ${props => props.$hidden ? "flex" : "none"};
+`
+
 export default function Password({ uses, inputRef, setStatus }: SecureKeypadProps) {
+    const [keypadOpen, setKeypadOpen] = useState(false);
+    const { status, setCurrentStatus } = React.useContext(KeypadContext);
+
     const props = {
         insert: {
             label: "비밀번호",
@@ -20,9 +29,9 @@ export default function Password({ uses, inputRef, setStatus }: SecureKeypadProp
         }
     }
 
-    return (
-        <Input id={props[uses].id} label={props[uses].label}>
+    return (<>
+        <Input id={props[uses].id} label={props[uses].label}  >
             <Input.TextField id={props[uses].id} ref={inputRef} setStatus={setStatus} />
         </Input>
-    )
+    </>)
 }

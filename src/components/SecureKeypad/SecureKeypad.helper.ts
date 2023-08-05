@@ -1,20 +1,24 @@
 export function trackingFocusingInput(
 	insert: HTMLInputElement,
 	confirm: HTMLInputElement,
-	isFocus: boolean,
 	curr: string
 ) {
-	const insertId = insert.getAttribute("id");
-	const confirmId = confirm.getAttribute("id");
+	if (curr) {
+		const currState = curr.includes("insert") ? "insert" : "confrim";
+		const needToChangeRef = currState === "insert" ? confirm : insert;
 
-	const insertState = isFocus && curr !== insertId;
-	const confirmState = isFocus && curr !== confirmId;
-
-	if (insertState) {
-		insert.setAttribute("disabled", "true");
+		needToChangeRef.setAttribute("disabled", "true");
 	}
+}
+export function trackingFocusingKeypad(
+	insert: HTMLDivElement,
+	confirm: HTMLDivElement,
+	curr: string
+) {
+	if (curr) {
+		const currState = curr.includes("insert") ? "insert" : "confrim";
+		const currRef = currState === "insert" ? insert : insert;
 
-	if (confirmState) {
-		confirm.setAttribute("disabled", "true");
+		currRef.setAttribute("aria-hidden", "false");
 	}
 }

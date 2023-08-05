@@ -21,10 +21,12 @@ const Column = styled.div`
 type NumpadProps = {
     numpadButton: string[][],
     className: string,
-    update: React.Dispatch<React.SetStateAction<number>>
+    inputRef: React.RefObject<HTMLInputElement>,
+    update?: React.Dispatch<React.SetStateAction<number>>
+    updateData?: React.Dispatch<React.SetStateAction<string>>
 }
 
-function Numpad({ numpadButton, className, update }: NumpadProps) {
+function Numpad({ numpadButton, className, inputRef, update }: NumpadProps) {
     const [clickCount, setClickCount] = React.useState(1);
 
     return (
@@ -40,7 +42,7 @@ function Numpad({ numpadButton, className, update }: NumpadProps) {
                                             key={uuidv4()}
                                             dangerouslySetInnerHTML={{ __html: svg }}
                                             onClick={(e) => {
-                                                sendInputValue(className, e)
+                                                console.log(e.currentTarget);
                                                 update(clickCount)
                                                 setClickCount(clickCount + 1)
                                             }}

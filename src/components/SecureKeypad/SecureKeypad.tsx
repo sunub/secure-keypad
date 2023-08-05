@@ -1,37 +1,86 @@
 import React from "react";
+import { createPortal } from "react-dom";
 import { trackingFocusingInput } from "./SecureKeypad.helper";
 import { KeypadContext } from "../Context/KeypadProvider";
 import Password from "../Password/Password";
+import Keypad from "../Keypad/Keypad";
 
 function SecureKeypad() {
+    const [insertKeypad, setInsertKepad] = React.useState(false);
+    const [confirmKeypad, setConfirmKeypad] = React.useState(false);
     const [isFocus, setFocus] = React.useState(false);
+
     const { status, setCurrentStatus } = React.useContext(KeypadContext);
-    const insertRef = React.useRef<HTMLInputElement>(null);
-    const confirmRef = React.useRef<HTMLInputElement>(null);
+    const [insertInputRef, confirmInputRef] = [React.useRef<HTMLInputElement>(null), React.useRef<HTMLInputElement>(null)];
 
-    // const checkFocus = React.useCallback(() => {
-    //     if (isFocus) {
-    //         const notFocusId = status.curr.includes("insert") ? "secure-keypad__confirm--input" : "secure-keypad__insert--input";
-    //         const notFocusTarget = document.getElementById(notFocusId);
+    function trackingFocusingOut(e: Event) {
+        const currTarget = e.target as HTMLElement
+        if (isFocus) {
+            const inputRef = status.curr && status.curr.includes("insert") ? confirmInputRef : insertInputRef;
 
-    //         notFocusTarget.removeAttribute("disabled");
-    //     }
-    // }, [isFocus, status.curr]);
+            if (currTarget.id !== status.curr && inputRef.current) {
+                inputRef.current.removeAttribute("disabled");
+                setCurrentStatus(isFocus, null);
+                setFocus(!isFocus);
 
-    // React.useEffect(() => {
-    //     document.body.addEventListener("click", checkFocus);
-    //     return () => {
-    //         document.body.removeEventListener("click", checkFocus)
-    //     }
-    // }, [checkFocus])
+                setInsertKepad(false)
+                setConfirmKeypad(false)
+            }
+        }
+    }
 
     React.useEffect(() => {
-        trackingFocusingInput(insertRef.current, confirmRef.current, isFocus, status.curr)
+        document.body.addEventListener("click", trackingFocusingOut)
+
+        return (() => {
+            document.removeEventListener("click", trackingFocusingOut)
+        })
+    }, [isFocus])
+
+    React.useEffect(() => {
+        if (status.curr) {
+            if (status.curr.includes("insert")) {
+                setInsertKepad(true)
+            } else {
+                setConfirmKeypad(true)
+            }
+            trackingFocusingInput(insertInputRef.current, confirmInputRef.current, status.curr);
+        }
     }, [isFocus])
 
     return (<>
-        <Password uses="insert" setStatus={setFocus} inputRef={insertRef} />
-        <Password uses="confirm" setStatus={setFocus} inputRef={confirmRef} />
+        <Password
+            uses="insert"
+            setStatus={setFocus}
+            inputRef={insertInputRef}
+        />
+        {
+            insertKeypad ?
+                createPortal(
+                    <Keypad
+                        uses="insert"
+                        inputRef={insertInputRef}
+                        setStatus={setFocus}
+                    />, document.body
+                ) : null
+        }
+
+        <Password
+            uses="confirm"
+            setStatus={setFocus}
+            inputRef={confirmInputRef}
+        />
+        {
+            confirmKeypad ?
+                createPortal(
+                    <Keypad
+                        uses="confirm"
+                        inputRef={confirmInputRef}
+                        setStatus={setFocus}
+                    />,
+                    document.body
+                ) : null
+        }
     </>)
 }
 

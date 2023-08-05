@@ -12,25 +12,26 @@ const Container = styled.div`
 type FunctionpadProps = {
     className: string;
     dataLength: number;
+    inputRef: React.RefObject<HTMLInputElement>
+    setStatus?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export default function Functionpad({ className, dataLength }: FunctionpadProps) {
+export default function Functionpad({ className, dataLength, inputRef, setStatus }: FunctionpadProps) {
     const { isFocus, setFocusStatus } = React.useContext(KeypadContext);
 
     return (
         <Container>
             <button
+                className={`send-button`}
                 onClick={() => {
-                    const btm = document.querySelector(".bottom-text") as HTMLElement;
-                    btm.innerHTML = "";
-                    btm.style.display = "none";
-                    handleError(dataLength);
-                    setFocusStatus(isFocus, className)
+                    setStatus(isFocus)
                 }}
             >
                 확인
             </button>
-            <button>
+            <button
+                className={`delete-button`}
+            >
                 삭제
             </button>
         </Container>

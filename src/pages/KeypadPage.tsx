@@ -2,6 +2,7 @@ import React from "react"
 import Txt from "../components/Txt"
 import KeypadProvider, { KeypadContext } from "../components/Context/KeypadProvider";
 import SecureKeypad from "../components/SecureKeypad/SecureKeypad";
+import Keypad from "../components/Keypad/Keypad";
 
 export default function KeypadPage() {
 
@@ -10,9 +11,7 @@ export default function KeypadPage() {
             <Txt typography="h3" color="red">
                 Secure Keypad
             </Txt>
-            <KeypadProvider>
-                <SecureKeypad />
-            </KeypadProvider>
+            <SecureKeypad />
         </>
     )
 }

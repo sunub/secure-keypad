@@ -10,6 +10,7 @@ const Global = styled.div`
 `;
 
 export default function App() {
+
 	return (
 		<Global>
 			<PageLayout>

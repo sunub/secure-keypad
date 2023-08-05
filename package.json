@@ -20,6 +20,7 @@
 		"start": "react-scripts start",
 		"build": "react-scripts build",
 		"test:easy": "jest **/*/App.easy.spec.tsx",
+		"test:hard": "jest **/*/App.hard.spec.tsx",
 		"test:my": "jest **/*/my.spec.tsx",
 		"eject": "react-scripts eject"
 	},

@@ -7,6 +7,12 @@ export function ThrowError() {
 export function App() {
     const [isClick, setClick] = React.useState(false);
 
+    React.useEffect(() => {
+        // document.body.addEventListener("click", () => {
+        //     document.querySelector("#insert-string").innerHTML = "Hell"
+        // })
+    }, [])
+
     return (<>
         <label htmlFor="비밀번호">
             비밀번호
@@ -14,7 +20,7 @@ export function App() {
         <input
             onClick={() => {
                 const curr = document.querySelector("#insert-string") as HTMLElement
-                curr.innerHTML = "Open"
+                curr.innerHTML = "비밀번호를 입력해주세요"
                 setClick(true)
             }}
             aria-label="비밀번호"
