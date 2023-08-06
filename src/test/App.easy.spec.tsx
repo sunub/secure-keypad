@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from "../App"
-import * as remotes from '../pages/remotes';
+// import * as remotes from '../pages/remotes';
 import { delay, mockConsoleError } from './utils';
 
 describe('App easy', () => {

@@ -1,33 +1,39 @@
+import { FocusContext } from "@/context/FocusContext";
 import React, { HTMLAttributes } from "react";
 import { styled } from "styled-components";
 
 interface LabelProps extends HTMLAttributes<HTMLLabelElement> {
+    id: string;
     label: string;
-    children: React.ReactElement
+    children: React.ReactElement;
+    bottomText: string;
 }
 
 const Label = styled.label`
     
 `
 
-export default function Input({ label, children }: LabelProps) {
+export default function Input({ id, label, children, bottomText }: LabelProps) {
     const Child = React.cloneElement(children);
 
     return (<>
-        <Label>
+        <Label htmlFor={id}>
             {label}
         </Label>
         {Child}
+        {bottomText !== null
+            ? <p>{bottomText}</p>
+            : null}
     </>)
 }
 
-type Setters = {
-    focus: React.Dispatch<React.SetStateAction<boolean>>
-}
-
-interface InputProps extends Omit<HTMLAttributes<HTMLInputElement>, "size"> {
-    error?: boolean
-    setters: Setters
+interface InputProps extends HTMLAttributes<HTMLInputElement> {
+    error?: boolean;
+    keypad?: FocusStatus;
+    triggerState: {
+        trigger: boolean,
+        setTrigger: React.Dispatch<React.SetStateAction<boolean>>,
+    }
 }
 
 const PasswordInput = styled.input`
@@ -37,11 +43,31 @@ const PasswordInput = styled.input`
 `
 
 Input.TextField = React.forwardRef(function (props: InputProps, ref: React.MutableRefObject<HTMLInputElement>) {
+    const uses = props.id.includes("insert") ? "insert" : "confirm";
+    const otherUses = uses === "insert" ? "confirm" : "insert";
+
     return (
         <PasswordInput
+            id={props.id}
             ref={ref}
-            onFocus={() => props.setters.focus(true)}
-            {...props}
+            onFocus={() => {
+                const currOpen = props.keypad.focusStatus[uses];
+                const otherOpen = props.keypad.focusStatus[otherUses];
+                if (!currOpen && !otherOpen) {
+                    props.keypad.setFocusStatus(status => {
+                        status[uses] = !currOpen;
+                        return status
+                    })
+                } else {
+                    props.keypad.setFocusStatus(status => {
+                        status[uses] = !currOpen;
+                        status[otherUses] = !otherOpen;
+                        return status
+                    })
+                }
+
+                props.triggerState.setTrigger(!props.triggerState.trigger)
+            }}
         />
     )
 })

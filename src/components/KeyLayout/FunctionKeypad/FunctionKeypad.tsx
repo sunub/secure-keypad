@@ -1,15 +1,27 @@
+import { FocusContext } from "@/context/FocusContext";
 import React from "react";
 
 interface FunctionPadProps {
-    set: React.Dispatch<React.SetStateAction<boolean>>
+    uses: string;
+    set: React.Dispatch<React.SetStateAction<InputStatus>>;
+    triggerState: {
+        trigger: boolean,
+        setTrigger: React.Dispatch<React.SetStateAction<boolean>>,
+    }
 }
 
-export default function FunctionKeypad({ set }: FunctionPadProps) {
+export default function FunctionKeypad({ uses, set, triggerState }: FunctionPadProps) {
+    const keypad = React.useContext(FocusContext);
+
     return (
         <div>
             <button
                 onClick={() => {
-                    set(false);
+                    triggerState.setTrigger(!triggerState.trigger)
+                    set(status => {
+                        status[uses] = false;
+                        return status
+                    })
                 }}
             >
                 확인
