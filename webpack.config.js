@@ -60,6 +60,10 @@ module.exports = {
 		],
 	},
 	resolve: {
+		alias: {
+			"@": path.resolve(__dirname, "./src"),
+			"@components": path.resolve(__dirname, "./src/components"),
+		},
 		extensions: [".ts", ".tsx", ".js", ".jsx"],
 	},
 	output: {

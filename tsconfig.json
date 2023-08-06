@@ -13,7 +13,11 @@
 		// import * as React from "react"로 import해야 하는 것들을 import React from "react"로 사용할 수 있게끔 만들어준다. babel과 같은 컴파일러를 이용하게 될 시 자동으로 default export module이 없더라도 만들어서 제공하는 기능이 있다. 이러한 컴파일러 기능을 원활하게 사용하기 위해서는 이 기능을 켜줄 필요가 있다.
 		"noUnusedParameters": true,
 		"allowJs": true,
-		"declaration": true
+		"declaration": true,
+		"paths": {
+			"@/*": ["./src/*"],
+			"@components/*": ["./src/components/*"]
+		}
 	},
 	"include": ["./src/**/*.ts", "./src/**/*.tsx", "./src/**/*.d.ts"],
 	"exclude": ["node_modules", "build"]

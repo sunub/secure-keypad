@@ -1,4 +1,4 @@
-import { SVG_HTMLS } from "../../constants/svg";
+import { SVG_HTMLS } from "@/constants/svg";
 import { v4 as uuidv4 } from "uuid";
 
 type PadButton = {
@@ -46,9 +46,10 @@ export function createPadButtons(): PadButton {
 			blank: blankBtn,
 		},
 		numpad: [
-			shuffledSvgHtmls.slice(0, 4),
-			shuffledSvgHtmls.slice(4, 8),
-			shuffledSvgHtmls.slice(8, 12),
+			shuffledSvgHtmls.slice(0, 3),
+			shuffledSvgHtmls.slice(3, 6),
+			shuffledSvgHtmls.slice(6, 9),
+			shuffledSvgHtmls.slice(9, 12),
 		],
 	};
 }

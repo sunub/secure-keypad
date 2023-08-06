@@ -1,14 +1,14 @@
-import React from "react"
-import styled from "styled-components"
+import React from "react";
+import { styled } from "styled-components";
 
 const Layout = styled.div`
-    display: flex;
     width: 100%;
     height: 100%;
-    flex-direction: column;
 
-    justify-content: center;
-    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 32px;
+    padding-right: 32px;
 `
 
 export default function PageLayout({ children }: { children: React.ReactNode }) {
