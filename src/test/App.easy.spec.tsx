@@ -33,23 +33,23 @@ describe('App easy', () => {
     expect(screen.queryByText(/6자리로 입력해주세요/)).not.toBeInTheDocument();
   });
 
-  // test('6자리 모두 입력하지 않고 "확인" 버튼을 누르면 입력값이 초기화된다', async () => {
-  //   render(<App />);
+  test('6자리 모두 입력하지 않고 "확인" 버튼을 누르면 입력값이 초기화된다', async () => {
+    render(<App />);
 
-  //   userEvent.click(await screen.findByLabelText<HTMLInputElement>(`비밀번호`));
+    userEvent.click(await screen.findByLabelText<HTMLInputElement>(`비밀번호`));
 
-  //   userEvent.click(await screen.findByTestId(1));
-  //   userEvent.click(await screen.findByTestId(2));
-  //   expect((await screen.findByLabelText<HTMLInputElement>(`비밀번호`)).value).toHaveLength(2);
+    userEvent.click(await screen.findByTestId(1));
+    userEvent.click(await screen.findByTestId(2));
+    expect((await screen.findByLabelText<HTMLInputElement>(`비밀번호`)).value).toHaveLength(2);
 
-  //   userEvent.click(await screen.findByText('확인'));
+    userEvent.click(await screen.findByText('확인'));
 
-  //   await delay(100);
-  //   expect((await screen.findByLabelText<HTMLInputElement>(`비밀번호`)).value).toHaveLength(0);
+    await delay(100);
+    expect((await screen.findByLabelText<HTMLInputElement>(`비밀번호`)).value).toHaveLength(0);
 
-  //   expect(screen.queryByText(/비밀번호를 입력해주세요/)).not.toBeInTheDocument();
-  //   expect(screen.queryByText(/6자리로 입력해주세요/)).not.toBeInTheDocument();
-  // });
+    expect(screen.queryByText(/비밀번호를 입력해주세요/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/6자리로 입력해주세요/)).not.toBeInTheDocument();
+  });
 
   // test('숫자패드를 누르면 값이 입력된다', async () => {
   //   render(<App />);

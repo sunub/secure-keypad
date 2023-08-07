@@ -4,16 +4,17 @@ import Keypad from "@components/Keypad/Keypad"
 import Spacer from "@/components/Spacer"
 import { styled } from "styled-components"
 import FocusProvider, { FocusContext } from "@/context/FocusContext"
+import Pads from "@/components/KeyLayout/Pads"
 
 const Section = styled.section`
     display: flex;
     flex-direction: column;
-
-    width: fit-content;
     `
 const Container = styled.div`
-    width: 100%;
+    width: fit-content;
     height: 100%;
+
+    position: relative;
     
     display: flex;
     flex-direction: column;
@@ -30,15 +31,20 @@ export default function KeypadPage() {
         const keypadArea = document.getElementById("keypad-page-area");
 
         if (!keypadArea.contains(currTarget)) {
-            console.log(32);
+            keypad.setFocusStatus(status => {
+                status["confirm"] = false;
+                status["insert"] = false;
+                return status
+            });
+            setTrigger(!trigger);
         }
     }
 
     React.useEffect(() => {
-        document.addEventListener("click", e => focusingOut(e))
+        document.body.addEventListener("click", focusingOut, false);
 
-        return document.removeEventListener("click", focusingOut)
-    }, [])
+        return (() => document.body.removeEventListener("click", focusingOut))
+    }, [trigger])
 
     return (
         <Container>

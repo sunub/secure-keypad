@@ -5,6 +5,10 @@ const Layout = styled.div`
     width: 100%;
     height: 100%;
 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     margin-left: auto;
     margin-right: auto;
     padding-left: 32px;

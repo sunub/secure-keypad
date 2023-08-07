@@ -50,6 +50,7 @@ Input.TextField = React.forwardRef(function (props: InputProps, ref: React.Mutab
         <PasswordInput
             id={props.id}
             ref={ref}
+            defaultValue={""}
             onFocus={() => {
                 const currOpen = props.keypad.focusStatus[uses];
                 const otherOpen = props.keypad.focusStatus[otherUses];

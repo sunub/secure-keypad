@@ -1,4 +1,5 @@
 import { SVG_HTMLS } from "@/constants/svg";
+import React from "react";
 import { v4 as uuidv4 } from "uuid";
 
 type PadButton = {
@@ -39,6 +40,11 @@ export function createPadButtons(): PadButton {
 		svgHtml.includes('data-testid="blank"')
 	);
 
+	for (let shuffledSvgHtml of shuffledSvgHtmls) {
+		shuffledSvgHtml = parser(shuffledSvgHtml);
+	}
+	console.log(shuffledSvgHtmls);
+
 	return {
 		id: uuidv4(),
 		functionpad: {
@@ -53,3 +59,34 @@ export function createPadButtons(): PadButton {
 		],
 	};
 }
+
+export default function parser(svgSting: string) {
+	const parser = new DOMParser();
+	const svgElement = parser.parseFromString(
+		svgSting,
+		"image/svg+xml"
+	).documentElement;
+	const reactSvg = convertElementToReact(svgElement);
+	return reactSvg;
+}
+
+function convertElementToReact(element: HTMLElement) {
+	const type = element.tagName;
+	const props = getProps(element);
+	const children = Array.from(element.childNodes).map(convertElementToReact);
+
+	return React.createElement(type, props, children);
+}
+
+function getProps(element: HTMLElement) {
+	const props = {};
+
+	for (let i = 0; i < element.attributes.length; i++) {
+		const attr = element.attributes[i];
+		props[attr.name] = attr.value;
+	}
+
+	return props;
+}
+
+createPadButtons();

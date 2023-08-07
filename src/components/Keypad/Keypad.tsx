@@ -17,6 +17,7 @@ interface KeypadProps {
 }
 
 export default function Keypad({ uses, label, text, triggerState }: KeypadProps) {
+    const inputRef = React.useRef<HTMLInputElement>(null);
     const keypad = React.useContext(FocusContext);
     const id = uses === "insert"
         ? "keypad__insert--input"
@@ -25,10 +26,17 @@ export default function Keypad({ uses, label, text, triggerState }: KeypadProps)
     return (
         <>
             <Input label={label} id={id} bottomText={keypad.focusStatus[uses] ? text : null}>
-                <Input.TextField keypad={keypad} id={id} triggerState={triggerState} />
+                <Input.TextField keypad={keypad} id={id} triggerState={triggerState} ref={inputRef} />
             </Input>
             <Spacer size={24} />
-            {keypad.focusStatus[uses] ? <Pads uses={uses} keypad={keypad} triggerState={triggerState} /> : null}
+            {/* <Pads uses={uses} keypad={keypad} triggerState={triggerState} inputRef={inputRef} /> */}
+            {keypad.focusStatus[uses]
+                ? <Pads
+                    uses={uses}
+                    inputRef={inputRef}
+                    keypad={keypad}
+                    triggerState={triggerState} />
+                : null}
         </>
     )
 }
