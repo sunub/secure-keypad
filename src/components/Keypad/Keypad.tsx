@@ -21,7 +21,7 @@ export default function Keypad({ uses, label, text, triggerState }: KeypadProps)
     const keypad = React.useContext(FocusContext);
     const id = uses === "insert"
         ? "keypad__insert--input"
-        : "keypad__confrim--input";
+        : "keypad__confirm--input";
 
     return (
         <>

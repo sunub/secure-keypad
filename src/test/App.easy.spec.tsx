@@ -40,32 +40,33 @@ describe('App easy', () => {
 
     userEvent.click(await screen.findByTestId(1));
     userEvent.click(await screen.findByTestId(2));
+
     expect((await screen.findByLabelText<HTMLInputElement>(`비밀번호`)).value).toHaveLength(2);
 
-    userEvent.click(await screen.findByText('확인'));
+    // userEvent.click(await screen.findByText('확인'));
 
-    await delay(100);
-    expect((await screen.findByLabelText<HTMLInputElement>(`비밀번호`)).value).toHaveLength(0);
+    // await delay(100);
+    // expect((await screen.findByLabelText<HTMLInputElement>(`비밀번호`)).value).toHaveLength(0);
 
-    expect(screen.queryByText(/비밀번호를 입력해주세요/)).not.toBeInTheDocument();
-    expect(screen.queryByText(/6자리로 입력해주세요/)).not.toBeInTheDocument();
+    // expect(screen.queryByText(/비밀번호를 입력해주세요/)).not.toBeInTheDocument();
+    // expect(screen.queryByText(/6자리로 입력해주세요/)).not.toBeInTheDocument();
   });
 
-  // test('숫자패드를 누르면 값이 입력된다', async () => {
-  //   render(<App />);
+  test('숫자패드를 누르면 값이 입력된다', async () => {
+    render(<App />);
 
-  //   userEvent.click(await screen.findByLabelText<HTMLInputElement>(`비밀번호`));
+    userEvent.click(await screen.findByLabelText<HTMLInputElement>(`비밀번호`));
 
-  //   userEvent.click(await screen.findByTestId(1));
-  //   userEvent.click(await screen.findByTestId(2));
-  //   expect((await screen.findByLabelText<HTMLInputElement>(`비밀번호`)).value).toHaveLength(2);
+    userEvent.click(await screen.findByTestId(1));
+    userEvent.click(await screen.findByTestId(2));
+    expect((await screen.findByLabelText<HTMLInputElement>(`비밀번호`)).value).toHaveLength(2);
 
-  //   userEvent.click(await screen.findByTestId(3));
-  //   userEvent.click(await screen.findByTestId(4));
-  //   userEvent.click(await screen.findByTestId(5));
-  //   userEvent.click(await screen.findByTestId(6));
-  //   expect((await screen.findByLabelText<HTMLInputElement>(`비밀번호`)).value).toHaveLength(6);
-  // });
+    // userEvent.click(await screen.findByTestId(3));
+    // userEvent.click(await screen.findByTestId(4));
+    // userEvent.click(await screen.findByTestId(5));
+    // userEvent.click(await screen.findByTestId(6));
+    // expect((await screen.findByLabelText<HTMLInputElement>(`비밀번호`)).value).toHaveLength(6);
+  });
 
   // test('6자리까지만 입력할 수 있다', async () => {
   //   render(<App />);

@@ -1,5 +1,5 @@
 import { FocusContext } from "@/context/FocusContext";
-import React, { HTMLAttributes } from "react";
+import React, { HTMLAttributes, useState } from "react";
 import { styled } from "styled-components";
 
 interface LabelProps extends HTMLAttributes<HTMLLabelElement> {
@@ -48,9 +48,10 @@ Input.TextField = React.forwardRef(function (props: InputProps, ref: React.Mutab
 
     return (
         <PasswordInput
+            readOnly
             id={props.id}
             ref={ref}
-            defaultValue={""}
+            defaultValue={":"}
             onFocus={() => {
                 const currOpen = props.keypad.focusStatus[uses];
                 const otherOpen = props.keypad.focusStatus[otherUses];

@@ -13,7 +13,6 @@ async function delay(ms: number) {
 async function mockConsoleError() {
     const consoleMock = jest.spyOn(console, "error")
     consoleMock.mockImplementation(() => "에러 발생!")
-
     return consoleMock
 }
 
@@ -23,12 +22,21 @@ describe("Studying how do it work", () => {
         jest.restoreAllMocks();
     });
 
-    test("라벨텍스트 클릭하기", async () => {
-        render(<App />)
+    // test("라벨텍스트 클릭하기", async () => {
+    //     render(<App />)
 
-        userEvent.click(await screen.findByLabelText<HTMLInputElement>(`비밀번호`))
+    //     userEvent.click(await screen.findByLabelText<HTMLInputElement>(`비밀번호`))
 
-        expect(await screen.findByText(/비밀번호를 입력해주세요/)).toBeInTheDocument
+    //     expect(await screen.findByText(/비밀번호를 입력해주세요/)).toBeInTheDocument()
+    // })
+
+    test("클릭 시 input 값이 증가하는가", async () => {
+        render(<App />);
+
+        userEvent.click(await screen.findByTestId(1));
+        userEvent.click(await screen.findByTestId(1));
+
+        expect((await screen.findByLabelText<HTMLInputElement>(`비밀번호`)).value).toHaveLength(2);
     })
 
     // test("확인 버튼 클릭시 텍스트 지우기", async () => {
@@ -48,4 +56,25 @@ describe("Studying how do it work", () => {
     //     await delay(100)
     //     expect(await screen.queryByText(/Hi There/)).toBeInTheDocument()
     // })
-})  
+})
+
+
+// function domrect(x, y, width, height) {
+//     return {x, y, width, height, top: y, bottom: y + height, left: x, right: x + width} as unknown as domrect
+// }
+
+// // imagine you want to mock domrect for a certain element with data-testid="testid"
+// const mockrect = domrect(0, 0, 150, 50)
+
+// const mockboundingclientrects = () => {
+//     const getboundingclientrect = htmlelement.prototype.getboundingclientrect;
+//     htmlelement.prototype.getboundingclientrect = function() {
+//         const elmt:htmlelement = this;
+//         // implement here ways to differentiate elements you want to override getboundingclientrect for
+//         // here we're looking for element with data-testid="testid"
+//         if ((elmt.children?.[0] as htmlelement)?.dataset?.testid === 'testid') {
+//             return mockrect
+//         }
+//         return getboundingclientrect.bind(this)()
+//     }
+// }

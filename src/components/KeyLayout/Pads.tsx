@@ -41,10 +41,11 @@ export default function Pads({ uses, keypad, triggerState, inputRef }: KeypadPro
     return (
         <PadsContainer id={id}>
             <Caution>6자리로 입력해주세요</Caution>
-            <PadsLayout>
+            <PadsLayout >
                 <NumKeypad
                     buttons={padButtons}
                     insertDataState={{ data: insertedData, setter: setInsertedData }}
+                    triggerState={triggerState}
                     inputRef={inputRef} />
                 <FunctionKeypad
                     uses={uses}
