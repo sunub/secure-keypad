@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { styled } from "styled-components";
 import { SVG_HTMLS } from "@/constants/svg";
 
@@ -23,18 +23,6 @@ interface NumKeypadProps {
     }
 }
 
-interface NumpadButtonsProps {
-    svg: string,
-    inputRef: React.MutableRefObject<HTMLInputElement>
-    padPositionState: {
-        positions: any,
-        setter: React.Dispatch<React.SetStateAction<any[]>>
-    }
-    insertDataState: {
-        data: number,
-        setter: React.Dispatch<React.SetStateAction<number>>,
-    }
-}
 
 const NumpadLayout = styled.table`
     border-collapse: collapse;
@@ -73,29 +61,23 @@ const Buttons = styled.button`
     }
 `
 
-export default function NumKeypad({ buttons, insertDataState, inputRef, triggerState }: NumKeypadProps) {
-    const [padPosition, setPadPosition] = React.useState<any[]>(Array.from({ length: 12 }, () => 0))
+export default function ForTestCode({ buttons, insertDataState, inputRef, triggerState }: NumKeypadProps) {
+    let padPositionIndex = -1;
+    const [padNumber, setPadNumber] = React.useState<any[]>(Array.from({ length: 12 }, () => 0));
 
-    useEffect(() => {
-        document.querySelectorAll(".key-pad-buttons").forEach(button => {
-            const svg: any = button.childNodes[0];
+    React.useEffect(() => {
+        const shuffledSVG = buttons.numpad.flat(1);
 
-            let index = svg.attributes[3].nodeValue;
-            switch (index) {
-                case ("shuffle"):
-                    index = 10
+        SVG_HTMLS.map((svg, value) => {
+            for (let i = 0; i < shuffledSVG.length; i++) {
+                if (svg === shuffledSVG[i]) {
+                    padNumber[i] = value + 1;
                     break;
-
-                case ("blank"):
-                    index = 11
-                    break;
-                default:
-                    index = Number(index)
-                    break;
+                }
             }
-            padPosition[index] = button.getClientRects()[0];
-            setPadPosition([...padPosition])
         })
+
+        setPadNumber(padNumber);
     }, [insertDataState.data])
 
     return (
@@ -109,15 +91,14 @@ export default function NumKeypad({ buttons, insertDataState, inputRef, triggerS
                             >
                                 {
                                     col.map(svg => {
+                                        padPositionIndex += 1
                                         return (
                                             <NumpadButtons
                                                 key={Math.random() * Number.MAX_VALUE}
                                                 svg={svg}
                                                 inputRef={inputRef}
-                                                padPositionState={{
-                                                    positions: padPosition,
-                                                    setter: setPadPosition
-                                                }}
+                                                positionIndex={padPositionIndex}
+                                                padButtonNumbers={padNumber}
                                                 insertDataState={{
                                                     data: insertDataState.data,
                                                     setter: insertDataState.setter
@@ -135,35 +116,49 @@ export default function NumKeypad({ buttons, insertDataState, inputRef, triggerS
     )
 }
 
-function NumpadButtons({ svg, inputRef, insertDataState, padPositionState }: NumpadButtonsProps) {
+interface NumpadButtonsProps {
+    svg: string,
+    inputRef: React.MutableRefObject<HTMLInputElement>,
+    positionIndex: number,
+    padButtonNumbers: any[],
+    insertDataState: {
+        data: number,
+        setter: React.Dispatch<React.SetStateAction<number>>,
+    },
+}
+
+function NumpadButtons({ svg, inputRef, positionIndex, padButtonNumbers, insertDataState }: NumpadButtonsProps) {
     return (
         <ButtonContainer
-            key={Math.random() * Number.MAX_VALUE}>
+            className={`key-pad-buttons`}
+            key={Math.random()}>
             <Buttons
-                className="key-pad-buttons"
-                key={Math.random() * Number.MAX_VALUE}
-                dangerouslySetInnerHTML={{ __html: svg }}
-                onMouseDown={(e) => {
-                    const currTarget = e.target as HTMLElement;
-
-                    const DOMRect = currTarget.getClientRects()[0];
-
-                    const currX = DOMRect.x;
-                    const currY = DOMRect.y;
-
-                    padPositionState.positions.map((pad, value) => {
-                        const padX = pad.x;
-                        const padY = pad.y;
-
-                        if (padX === currX && padY === currY) {
-                            if (inputRef.current) {
-                                inputRef.current.value += `${value}`;
-                            }
+                onMouseDown={() => {
+                    if (insertDataState.data < 6) {
+                        let inputValue: any = 0;
+                        switch (padButtonNumbers[positionIndex]) {
+                            case 10:
+                                inputValue = 0;
+                                break;
+                            case 11:
+                                inputValue = "shuffle";
+                                break;
+                            case 12:
+                                inputValue = "blank";
+                                break;
+                            default:
+                                inputValue = padButtonNumbers[positionIndex];
+                                break;
                         }
-                    })
-                    insertDataState.setter(insertDataState.data += 1);
-                    inputRef.current.focus();
+
+                        if (typeof inputValue !== "string") {
+                            inputRef.current.value += inputValue;
+                            insertDataState.setter(insertDataState.data + 1);
+                        }
+                    }
                 }}
+                key={Math.random()}
+                dangerouslySetInnerHTML={{ __html: svg }}
             />
         </ButtonContainer>
     )

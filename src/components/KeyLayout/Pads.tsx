@@ -4,6 +4,7 @@ import FunctionKeypad from "./FunctionKeypad/index"
 import { createPadButtons } from "./Pads.helper"
 import { FocusContext } from "@/context/FocusContext"
 import { styled } from "styled-components"
+import ForTestCode from "./NumKeypad/ForTestCode"
 
 interface KeypadProps {
     uses: string;
@@ -39,18 +40,26 @@ export default function Pads({ uses, keypad, triggerState, inputRef }: KeypadPro
     const [insertedData, setInsertedData] = React.useState(0);
 
     return (
-        <PadsContainer id={id}>
+        <PadsContainer
+            id={id}>
             <Caution>6자리로 입력해주세요</Caution>
             <PadsLayout >
-                <NumKeypad
+                <ForTestCode
                     buttons={padButtons}
                     insertDataState={{ data: insertedData, setter: setInsertedData }}
                     triggerState={triggerState}
                     inputRef={inputRef} />
+
+                {/* <NumKeypad
+                    buttons={padButtons}
+                    insertDataState={{ data: insertedData, setter: setInsertedData }}
+                    triggerState={triggerState}
+                    inputRef={inputRef} /> */}
                 <FunctionKeypad
                     uses={uses}
                     inputRef={inputRef}
                     set={keypad.setFocusStatus}
+                    insertDataState={{ data: insertedData, setter: setInsertedData }}
                     triggerState={triggerState} />
             </PadsLayout>
         </PadsContainer>

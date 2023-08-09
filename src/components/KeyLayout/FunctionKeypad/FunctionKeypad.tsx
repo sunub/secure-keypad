@@ -9,18 +9,24 @@ interface FunctionPadProps {
         trigger: boolean,
         setTrigger: React.Dispatch<React.SetStateAction<boolean>>,
     };
+    insertDataState: {
+        data: number,
+        setter: React.Dispatch<React.SetStateAction<number>>,
+    }
 }
 
-export default function FunctionKeypad({ uses, set, inputRef, triggerState }: FunctionPadProps) {
+export default function FunctionKeypad({ uses, set, inputRef, triggerState, insertDataState }: FunctionPadProps) {
     const keypad = React.useContext(FocusContext);
+
+    React.useEffect(() => {
+        console.log(insertDataState.data);
+    }, [insertDataState.data])
 
     return (
         <div>
             <button
                 onClick={() => {
-                    const currDataLength = inputRef.current.value.length;
-
-                    if (currDataLength < 6) {
+                    if (insertDataState.data <= 6) {
                         inputRef.current.value = "";
                     }
 
@@ -35,6 +41,19 @@ export default function FunctionKeypad({ uses, set, inputRef, triggerState }: Fu
             </button>
             <button>
                 삭제
+            </button>
+            <button>
+                <span
+                    onClick={() => {
+                        if (inputRef.current) {
+                            let curr = inputRef.current.value;
+                            curr = curr.slice(0, curr.length - 1);
+                            inputRef.current.value = curr;
+                        }
+                    }}
+                    className="material-symbols-outlined">
+                    backspace
+                </span>
             </button>
         </div>
     )

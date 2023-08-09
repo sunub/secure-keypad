@@ -34,11 +34,17 @@ describe("Studying how do it work", () => {
         render(<App />);
 
         userEvent.click(await screen.findByTestId(1));
-        userEvent.click(await screen.findByTestId(1));
+        userEvent.click(await screen.findByTestId(2));
 
         expect((await screen.findByLabelText<HTMLInputElement>(`비밀번호`)).value).toHaveLength(2);
-    })
 
+        userEvent.click(await screen.findByTestId(3));
+        userEvent.click(await screen.findByTestId(4));
+        userEvent.click(await screen.findByTestId(5));
+        userEvent.click(await screen.findByTestId(6));
+
+        expect((await screen.findByLabelText<HTMLInputElement>(`비밀번호`)).value).toHaveLength(6);
+    })
     // test("확인 버튼 클릭시 텍스트 지우기", async () => {
     //     render(<App />)
 

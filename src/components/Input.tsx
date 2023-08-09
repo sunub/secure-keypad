@@ -43,33 +43,53 @@ const PasswordInput = styled.input`
 `
 
 Input.TextField = React.forwardRef(function (props: InputProps, ref: React.MutableRefObject<HTMLInputElement>) {
+    const [inputValue, setInputValue] = React.useState("");
     const uses = props.id.includes("insert") ? "insert" : "confirm";
     const otherUses = uses === "insert" ? "confirm" : "insert";
+
+    React.useEffect(() => {
+        const input = document.getElementById(`${props.id}`) as HTMLInputElement;
+
+        function deleteKeypad(e) {
+            if (e.code === "Backspace") {
+                const currValue = input.value;
+                const deletedValue = currValue.slice(0, currValue.length - 1);
+                input.value = deletedValue;
+            }
+        }
+
+        input.addEventListener("keydown", deleteKeypad);
+
+        return (() => input.removeEventListener("keydown", deleteKeypad));
+    }, [])
 
     return (
         <PasswordInput
             readOnly
             id={props.id}
             ref={ref}
-            defaultValue={":"}
+            value={inputValue}
             onFocus={() => {
                 const currOpen = props.keypad.focusStatus[uses];
                 const otherOpen = props.keypad.focusStatus[otherUses];
+
                 if (!currOpen && !otherOpen) {
                     props.keypad.setFocusStatus(status => {
                         status[uses] = !currOpen;
+                        props.triggerState.setTrigger(!props.triggerState.trigger)
                         return status
                     })
-                } else {
+                } else if (!currOpen) {
                     props.keypad.setFocusStatus(status => {
                         status[uses] = !currOpen;
                         status[otherUses] = !otherOpen;
+                        props.triggerState.setTrigger(!props.triggerState.trigger)
                         return status
                     })
                 }
 
-                props.triggerState.setTrigger(!props.triggerState.trigger)
             }}
+            onChange={(({ target: { value } }) => setInputValue(value))}
         />
     )
 })

@@ -46,16 +46,16 @@ describe('App hard', () => {
   //   expect(spyOnCreate).toHaveBeenCalled();
   // });
 
-  // test('입력된 값을 백스페이스로 지울 수 있다', async () => {
-  //   render(<App />);
+  test('입력된 값을 백스페이스로 지울 수 있다', async () => {
+    render(<App />);
 
-  //   userEvent.click(await screen.findByLabelText<HTMLInputElement>(`비밀번호`));
+    userEvent.click(await screen.findByLabelText<HTMLInputElement>(`비밀번호`));
 
-  //   userEvent.click(await screen.findByTestId(6));
-  //   userEvent.click(await screen.findByTestId(4));
-  //   expect((await screen.findByLabelText<HTMLInputElement>(`비밀번호`)).value).toHaveLength(2);
+    await userEvent.click(await screen.findByTestId(6));
+    await userEvent.click(await screen.findByTestId(4));
+    expect((await screen.findByLabelText<HTMLInputElement>(`비밀번호`)).value).toHaveLength(2);
 
-  //   userEvent.type(await screen.findByLabelText<HTMLInputElement>(`비밀번호`), '{backspace}');
-  //   expect((await screen.findByLabelText<HTMLInputElement>(`비밀번호`)).value).toHaveLength(1);
-  // });
+    await userEvent.type(await screen.findByLabelText<HTMLInputElement>(`비밀번호`), '{backspace}');
+    expect((await screen.findByLabelText<HTMLInputElement>(`비밀번호`)).value).toHaveLength(1);
+  });
 });
