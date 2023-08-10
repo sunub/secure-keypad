@@ -23,19 +23,6 @@ interface NumKeypadProps {
     }
 }
 
-interface NumpadButtonsProps {
-    svg: string,
-    inputRef: React.MutableRefObject<HTMLInputElement>
-    padPositionState: {
-        positions: any,
-        setter: React.Dispatch<React.SetStateAction<any[]>>
-    }
-    insertDataState: {
-        data: number,
-        setter: React.Dispatch<React.SetStateAction<number>>,
-    }
-}
-
 const NumpadLayout = styled.table`
     border-collapse: collapse;
     width: 100%;
@@ -133,6 +120,19 @@ export default function NumKeypad({ buttons, insertDataState, inputRef, triggerS
             </tbody>
         </NumpadLayout>
     )
+}
+
+interface NumpadButtonsProps {
+    svg: string,
+    inputRef: React.MutableRefObject<HTMLInputElement>
+    padPositionState: {
+        positions: any,
+        setter: React.Dispatch<React.SetStateAction<any[]>>
+    }
+    insertDataState: {
+        data: number,
+        setter: React.Dispatch<React.SetStateAction<number>>,
+    }
 }
 
 function NumpadButtons({ svg, inputRef, insertDataState, padPositionState }: NumpadButtonsProps) {
