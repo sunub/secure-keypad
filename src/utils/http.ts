@@ -9,6 +9,9 @@ export const http = {
 		url: string,
 		body?: Request
 	) {
-		return axios.post<Response>(url, body).then((res) => res.data);
+		return axios
+			.post<Response>(url, body)
+			.then((res) => res.data)
+			.catch((err) => console.error(err));
 	},
 };

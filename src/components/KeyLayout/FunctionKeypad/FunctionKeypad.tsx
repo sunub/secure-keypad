@@ -19,7 +19,6 @@ export default function FunctionKeypad({ uses, set, inputRef, triggerState, inse
     const keypad = React.useContext(FocusContext);
 
     React.useEffect(() => {
-        console.log(insertDataState.data);
     }, [insertDataState.data])
 
     return (

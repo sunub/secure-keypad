@@ -1,17 +1,11 @@
 import React from "react";
 import { styled } from "styled-components";
 import { SVG_HTMLS } from "@/constants/svg";
+import PageLayout from "@/components/PageLayout";
 
-type FunctionPad = {
-    shuffle: string[],
-    blank: string[],
-}
 
 interface NumKeypadProps {
-    buttons: {
-        numpad: string[][],
-        functionpad: FunctionPad,
-    };
+    buttons: Keypad;
     inputRef: React.MutableRefObject<HTMLInputElement>;
     triggerState: {
         trigger: boolean,
@@ -64,31 +58,31 @@ const Buttons = styled.button`
 export default function ForTestCode({ buttons, insertDataState, inputRef, triggerState }: NumKeypadProps) {
     let padPositionIndex = -1;
     const [padNumber, setPadNumber] = React.useState<any[]>(Array.from({ length: 12 }, () => 0));
-
     React.useEffect(() => {
-        const shuffledSVG = buttons.numpad.flat(1);
+        if (buttons) {
+            const shuffledSVG = buttons.svgGrid.flat(1);
 
-        SVG_HTMLS.map((svg, value) => {
-            for (let i = 0; i < shuffledSVG.length; i++) {
-                if (svg === shuffledSVG[i]) {
-                    padNumber[i] = value + 1;
-                    break;
+            SVG_HTMLS.map((svg, value) => {
+                for (let i = 0; i < shuffledSVG.length; i++) {
+                    if (svg === shuffledSVG[i]) {
+                        padNumber[i] = value + 1;
+                        break;
+                    }
                 }
-            }
-        })
+            })
 
-        setPadNumber(padNumber);
-    }, [insertDataState.data])
+            setPadNumber(padNumber);
+        }
+    }, [buttons])
 
     return (
         <NumpadLayout>
-            <tbody>
-                {
-                    buttons.numpad.map(col => {
+            {/* <tbody>
+                {buttons
+                    ? buttons.svgGrid.map(col => {
                         return (
                             <PadLayout
-                                key={Math.random() * Number.MAX_VALUE}
-                            >
+                                key={Math.random() * Number.MAX_VALUE}>
                                 {
                                     col.map(svg => {
                                         padPositionIndex += 1
@@ -103,6 +97,10 @@ export default function ForTestCode({ buttons, insertDataState, inputRef, trigge
                                                     data: insertDataState.data,
                                                     setter: insertDataState.setter
                                                 }}
+                                                triggerState={{
+                                                    trigger: triggerState.trigger,
+                                                    setTrigger: triggerState.setTrigger
+                                                }}
                                             />
                                         )
                                     })
@@ -110,8 +108,8 @@ export default function ForTestCode({ buttons, insertDataState, inputRef, trigge
                             </PadLayout>
                         )
                     })
-                }
-            </tbody>
+                    : null}
+            </tbody> */}
         </NumpadLayout>
     )
 }
@@ -125,9 +123,13 @@ interface NumpadButtonsProps {
         data: number,
         setter: React.Dispatch<React.SetStateAction<number>>,
     },
+    triggerState: {
+        trigger: boolean,
+        setTrigger: React.Dispatch<React.SetStateAction<boolean>>,
+    }
 }
 
-function NumpadButtons({ svg, inputRef, positionIndex, padButtonNumbers, insertDataState }: NumpadButtonsProps) {
+function NumpadButtons({ svg, inputRef, positionIndex, padButtonNumbers, insertDataState, triggerState }: NumpadButtonsProps) {
     return (
         <ButtonContainer
             className={`key-pad-buttons`}
@@ -154,6 +156,8 @@ function NumpadButtons({ svg, inputRef, positionIndex, padButtonNumbers, insertD
                         if (typeof inputValue !== "string") {
                             inputRef.current.value += inputValue;
                             insertDataState.setter(insertDataState.data + 1);
+                        } else if (inputValue === "shuffle") {
+                            triggerState.setTrigger(!triggerState.trigger)
                         }
                     }
                 }}

@@ -3,8 +3,7 @@ import Txt from "@components/Txt"
 import Keypad from "@components/Keypad/Keypad"
 import Spacer from "@/components/Spacer"
 import { styled } from "styled-components"
-import FocusProvider, { FocusContext } from "@/context/FocusContext"
-import Pads from "@/components/KeyLayout/Pads"
+import { FocusContext } from "@/context/FocusContext"
 
 const Section = styled.section`
     display: flex;
@@ -20,6 +19,10 @@ const Container = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+`
+
+const ConfirmBtn = styled.button`
+    
 `
 
 export default function KeypadPage() {
@@ -65,6 +68,13 @@ export default function KeypadPage() {
                     text="비밀번호를 입력하세요"
                     triggerState={{ trigger, setTrigger }} />
             </Section>
+            <ConfirmBtn
+                onClick={() => {
+                    const insert = document.querySelector("#keypad__insert--input") as HTMLInputElement;
+                    const confirm = document.querySelector("#keypad__confirm--input") as HTMLInputElement;
+
+
+                }}>완료</ConfirmBtn>
         </Container>
     )
 }

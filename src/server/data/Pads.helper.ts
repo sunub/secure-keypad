@@ -1,6 +1,4 @@
-import isNode from "detect-node";
-
-const host = isNode ? "http://localhost:3001/" : "";
+import { v4 as uuidv4 } from "uuid";
 
 type PadButton = {
 	id: string;
@@ -29,22 +27,4 @@ export function shuffle(array: any[]): string[] {
 	}
 
 	return newArray;
-}
-
-export async function getCreatedKeypad() {
-	const response = await fetch(`${host}api/keypad`, {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-	})
-		.then((res) => res.json())
-		.then((json) => console.log(json));
-
-	// if (!response.ok) {
-	// 	throw new Error("Keypad is not loaded");
-	// }
-
-	// const createdKeypad = await response.json();
-	return response;
 }

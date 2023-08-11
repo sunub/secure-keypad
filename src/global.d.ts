@@ -21,3 +21,23 @@ type Setter = {
 	status: InputStatus;
 	setter: React.Dispatch<React.SetStateAction<InputStatus>>;
 };
+
+interface FunctionKey {
+	symbol: string;
+	rowIndex: number;
+	columnIndex: number;
+}
+
+interface Keypad {
+	functionKeys: FunctionKey[];
+	size: {
+		rows: number;
+		columns: number;
+	};
+	svgGrid: string[][];
+}
+
+interface CreateKeypadResponse {
+	uid: string;
+	keypad: Keypad;
+}

@@ -1,7 +1,10 @@
-module.exports = {
+const config = {
 	transform: {
-		"^.+\\.[jt]sx?$": ["babel-jest"],
+		// "^.+\\.[j|t]sx?$": ["babel-jest"],
+		"^.+\\.(ts|tsx)$": "ts-jest",
+		"^.+\\.(js)$": "babel-jest",
 	},
+	transformIgnorePatterns: [],
 	moduleDirectories: ["node_modules", "src"],
 	moduleNameMapper: {
 		"@/(.*)$": "<rootDir>/src/$1",
@@ -11,4 +14,9 @@ module.exports = {
 	setupFilesAfterEnv: ["./jest.setup.js"],
 	testEnvironment: "jsdom",
 	testTimeout: 10000,
+	globals: {
+		fetch: global.fetch,
+	},
 };
+
+export default config;

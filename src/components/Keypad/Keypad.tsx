@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import Input from "../Input"
 import Pads from "../KeyLayout/index"
 import { styled } from "styled-components"

@@ -1,6 +1,6 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const common = require("./webpack.config");
+const common = require("./webpack.config.cjs");
 const { merge } = require("webpack-merge");
 
 module.exports = merge(common, {

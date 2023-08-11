@@ -1,14 +1,16 @@
-import React from "react"
+import React, { useEffect } from "react"
 import NumKeypad from "./NumKeypad/index"
 import FunctionKeypad from "./FunctionKeypad/index"
-import { createPadButtons } from "./Pads.helper"
-import { FocusContext } from "@/context/FocusContext"
 import { styled } from "styled-components"
+import { getCreatedKeypad } from "./Pads.helper"
 import ForTestCode from "./NumKeypad/ForTestCode"
+import useHasMouted from "@/hooks/use-mouted"
+import { createKeypad } from "@/pages/remotes"
+import axios from "axios"
 
 interface KeypadProps {
     uses: string;
-    keypad: FocusStatus;
+    keypad?: FocusStatus;
     inputRef: React.MutableRefObject<HTMLInputElement>;
     triggerState: {
         trigger: boolean,
@@ -35,32 +37,46 @@ const PadsLayout = styled.div`
 `
 
 export default function Pads({ uses, keypad, triggerState, inputRef }: KeypadProps) {
-    const padButtons = createPadButtons();
+    const isPending = useHasMouted();
     const id = uses === "insert" ? "keypad__insert--keypad" : "keypad__confirm--keypad";
     const [insertedData, setInsertedData] = React.useState(0);
+    const [padButtons, setPadButtons] = React.useState(null);
+    const host = "http://localhost:3001/";
+
+    useEffect(() => {
+        async function fetchData() {
+            const a = (await axios.post("/api/keypad")).data
+            setPadButtons(a)
+        }
+        fetchData();
+    }, [triggerState.trigger])
 
     return (
         <PadsContainer
             id={id}>
             <Caution>6자리로 입력해주세요</Caution>
             <PadsLayout >
-                <ForTestCode
-                    buttons={padButtons}
-                    insertDataState={{ data: insertedData, setter: setInsertedData }}
-                    triggerState={triggerState}
-                    inputRef={inputRef} />
+                {
+                    padButtons
+                        ? <ForTestCode
+                            buttons={padButtons}
+                            insertDataState={{ data: insertedData, setter: setInsertedData }}
+                            triggerState={triggerState}
+                            inputRef={inputRef} />
+                        : null
+                }
 
                 {/* <NumKeypad
                     buttons={padButtons}
                     insertDataState={{ data: insertedData, setter: setInsertedData }}
                     triggerState={triggerState}
                     inputRef={inputRef} /> */}
-                <FunctionKeypad
+                {/* <FunctionKeypad
                     uses={uses}
                     inputRef={inputRef}
                     set={keypad.setFocusStatus}
                     insertDataState={{ data: insertedData, setter: setInsertedData }}
-                    triggerState={triggerState} />
+                    triggerState={triggerState} /> */}
             </PadsLayout>
         </PadsContainer>
     )
