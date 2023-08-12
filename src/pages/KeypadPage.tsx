@@ -4,6 +4,8 @@ import Keypad from "@components/Keypad/Keypad"
 import Spacer from "@/components/Spacer"
 import { styled } from "styled-components"
 import { FocusContext } from "@/context/FocusContext"
+import { http } from "@/utils/http"
+import { submitPassword } from "./remotes"
 
 const Section = styled.section`
     display: flex;
@@ -72,7 +74,6 @@ export default function KeypadPage() {
                 onClick={() => {
                     const insert = document.querySelector("#keypad__insert--input") as HTMLInputElement;
                     const confirm = document.querySelector("#keypad__confirm--input") as HTMLInputElement;
-
 
                 }}>완료</ConfirmBtn>
         </Container>
