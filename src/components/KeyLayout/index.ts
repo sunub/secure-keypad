@@ -1,2 +1,2 @@
-export * from "./Pads";
-export { default } from "./Pads";
+export * from "./PadLayout";
+export { default } from "./PadLayout";

@@ -29,11 +29,11 @@ export default function Input({ id, label, children, bottomText }: LabelProps) {
 
 interface InputProps extends HTMLAttributes<HTMLInputElement> {
     error?: boolean;
-    keypad?: FocusStatus;
     triggerState: {
         trigger: boolean,
         setTrigger: React.Dispatch<React.SetStateAction<boolean>>,
     }
+    contextValue: ContextValue
 }
 
 const PasswordInput = styled.input`
@@ -43,44 +43,37 @@ const PasswordInput = styled.input`
 `
 
 Input.TextField = React.forwardRef(function (props: InputProps, ref: React.MutableRefObject<HTMLInputElement>) {
-    const [inputValue, setInputValue] = React.useState("");
     const uses = props.id.includes("insert") ? "insert" : "confirm";
     const otherUses = uses === "insert" ? "confirm" : "insert";
 
-    React.useEffect(() => {
-        const input = document.getElementById(`${props.id}`) as HTMLInputElement;
-
-        function deleteKeypad(e) {
-            if (e.code === "Backspace") {
-                const currValue = input.value;
-                const deletedValue = currValue.slice(0, currValue.length - 1);
-                input.value = deletedValue;
-            }
-        }
-
-        input.addEventListener("keydown", deleteKeypad);
-
-        return (() => input.removeEventListener("keydown", deleteKeypad));
-    }, [])
-
     return (
         <PasswordInput
+            onKeyDown={(e) => {
+                if (e.code === "Backspace") {
+                    const currValue = ref.current.value;
+                    const currLength = props.contextValue.data.length;
+                    const deletedValue = currValue.slice(0, currValue.length - 1);
+                    ref.current.value = deletedValue;
+                    currLength > 0
+                        ? props.contextValue.setter.length(currLength - 1)
+                        : null;
+                }
+            }}
             readOnly
             id={props.id}
             ref={ref}
-            value={inputValue}
             onFocus={() => {
-                const currOpen = props.keypad.focusStatus[uses];
-                const otherOpen = props.keypad.focusStatus[otherUses];
+                const currOpen = props.contextValue.data.focusing[uses];
+                const otherOpen = props.contextValue.data.focusing[otherUses];
 
                 if (!currOpen && !otherOpen) {
-                    props.keypad.setFocusStatus(status => {
+                    props.contextValue.setter.focusing(status => {
                         status[uses] = !currOpen;
                         props.triggerState.setTrigger(!props.triggerState.trigger)
                         return status
                     })
                 } else if (!currOpen) {
-                    props.keypad.setFocusStatus(status => {
+                    props.contextValue.setter.focusing(status => {
                         status[uses] = !currOpen;
                         status[otherUses] = !otherOpen;
                         props.triggerState.setTrigger(!props.triggerState.trigger)
@@ -89,7 +82,6 @@ Input.TextField = React.forwardRef(function (props: InputProps, ref: React.Mutab
                 }
 
             }}
-            onChange={(({ target: { value } }) => setInputValue(value))}
         />
     )
 })

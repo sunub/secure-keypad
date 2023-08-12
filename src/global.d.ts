@@ -41,3 +41,14 @@ interface CreateKeypadResponse {
 	uid: string;
 	keypad: Keypad;
 }
+
+type ContextValue = {
+	data: {
+		focusing: InputStatus;
+		length: number;
+	};
+	setter: {
+		focusing: React.Dispatch<React.SetStateAction<InputStatus>>;
+		length: React.Dispatch<React.SetStateAction<number>>;
+	};
+};

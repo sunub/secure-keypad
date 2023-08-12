@@ -1,6 +1,6 @@
 import { rest } from "msw";
 import { z } from "zod";
-import { createKeypadResponse } from "./data/tossWorld";
+import { createKeypadResponse } from "@/utils/pads";
 
 const keypadResponseMap = new Map<string, CreateKeypadResponse>();
 

@@ -9,25 +9,19 @@ interface FunctionPadProps {
         trigger: boolean,
         setTrigger: React.Dispatch<React.SetStateAction<boolean>>,
     };
-    insertDataState: {
-        data: number,
-        setter: React.Dispatch<React.SetStateAction<number>>,
-    }
 }
 
-export default function FunctionKeypad({ uses, set, inputRef, triggerState, insertDataState }: FunctionPadProps) {
+export default function FunctionKeypad({ uses, set, inputRef, triggerState }: FunctionPadProps) {
     const keypad = React.useContext(FocusContext);
-
-    React.useEffect(() => {
-    }, [insertDataState.data])
 
     return (
         <div>
             <button
                 onClick={() => {
-                    if (insertDataState.data <= 6) {
+                    if (keypad.data.length < 6) {
                         inputRef.current.value = "";
                     }
+                    keypad.setter.length(0);
 
                     triggerState.setTrigger(!triggerState.trigger)
                     set(status => {

@@ -1,17 +1,14 @@
 import React, { useEffect } from "react"
-import NumKeypad from "./NumKeypad/index"
 import FunctionKeypad from "./FunctionKeypad/index"
 import { styled } from "styled-components"
-import { getCreatedKeypad } from "./Pads.helper"
 import ForTestCode from "./NumKeypad/ForTestCode"
-import useHasMouted from "@/hooks/use-mouted"
-import { createKeypad } from "@/pages/remotes"
-import axios from "axios"
+import { http } from "@/utils/http"
 
 interface KeypadProps {
     uses: string;
-    keypad?: FocusStatus;
+    keypad?: ContextValue;
     inputRef: React.MutableRefObject<HTMLInputElement>;
+    contextValue: ContextValue,
     triggerState: {
         trigger: boolean,
         setTrigger: React.Dispatch<React.SetStateAction<boolean>>,
@@ -36,19 +33,17 @@ const PadsLayout = styled.div`
     flex-direction: column;
 `
 
-export default function Pads({ uses, keypad, triggerState, inputRef }: KeypadProps) {
-    const isPending = useHasMouted();
+export default function PadLayout({ uses, keypad, triggerState, inputRef, contextValue }: KeypadProps) {
     const id = uses === "insert" ? "keypad__insert--keypad" : "keypad__confirm--keypad";
-    const [insertedData, setInsertedData] = React.useState(0);
-    const [padButtons, setPadButtons] = React.useState(null);
-    const host = "http://localhost:3001/";
+    const [padButtons, setPadButtons] = React.useState<CreateKeypadResponse | any>(null);
 
     useEffect(() => {
-        async function fetchData() {
-            const a = (await axios.post("/api/keypad")).data
-            setPadButtons(a)
+        async function get() {
+            const responseKeypad = await http.post("/api/keypad");
+
+            setPadButtons(responseKeypad);
         }
-        fetchData();
+        get()
     }, [triggerState.trigger])
 
     return (
@@ -59,9 +54,9 @@ export default function Pads({ uses, keypad, triggerState, inputRef }: KeypadPro
                 {
                     padButtons
                         ? <ForTestCode
-                            buttons={padButtons}
-                            insertDataState={{ data: insertedData, setter: setInsertedData }}
+                            buttons={padButtons.keypad}
                             triggerState={triggerState}
+                            contextValue={contextValue}
                             inputRef={inputRef} />
                         : null
                 }
@@ -71,12 +66,11 @@ export default function Pads({ uses, keypad, triggerState, inputRef }: KeypadPro
                     insertDataState={{ data: insertedData, setter: setInsertedData }}
                     triggerState={triggerState}
                     inputRef={inputRef} /> */}
-                {/* <FunctionKeypad
+                <FunctionKeypad
                     uses={uses}
                     inputRef={inputRef}
-                    set={keypad.setFocusStatus}
-                    insertDataState={{ data: insertedData, setter: setInsertedData }}
-                    triggerState={triggerState} /> */}
+                    set={keypad.setter.focusing}
+                    triggerState={triggerState} />
             </PadsLayout>
         </PadsContainer>
     )

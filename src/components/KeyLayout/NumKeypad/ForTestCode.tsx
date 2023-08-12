@@ -1,7 +1,7 @@
 import React from "react";
 import { styled } from "styled-components";
 import { SVG_HTMLS } from "@/constants/svg";
-import PageLayout from "@/components/PageLayout";
+import { FocusContext } from "@/context/FocusContext";
 
 
 interface NumKeypadProps {
@@ -11,10 +11,7 @@ interface NumKeypadProps {
         trigger: boolean,
         setTrigger: React.Dispatch<React.SetStateAction<boolean>>,
     }
-    insertDataState: {
-        data: number,
-        setter: React.Dispatch<React.SetStateAction<number>>,
-    }
+    contextValue: ContextValue
 }
 
 
@@ -55,7 +52,7 @@ const Buttons = styled.button`
     }
 `
 
-export default function ForTestCode({ buttons, insertDataState, inputRef, triggerState }: NumKeypadProps) {
+export default function ForTestCode({ buttons, inputRef, triggerState, contextValue }: NumKeypadProps) {
     let padPositionIndex = -1;
     const [padNumber, setPadNumber] = React.useState<any[]>(Array.from({ length: 12 }, () => 0));
     React.useEffect(() => {
@@ -77,7 +74,7 @@ export default function ForTestCode({ buttons, insertDataState, inputRef, trigge
 
     return (
         <NumpadLayout>
-            {/* <tbody>
+            <tbody>
                 {buttons
                     ? buttons.svgGrid.map(col => {
                         return (
@@ -93,14 +90,11 @@ export default function ForTestCode({ buttons, insertDataState, inputRef, trigge
                                                 inputRef={inputRef}
                                                 positionIndex={padPositionIndex}
                                                 padButtonNumbers={padNumber}
-                                                insertDataState={{
-                                                    data: insertDataState.data,
-                                                    setter: insertDataState.setter
-                                                }}
                                                 triggerState={{
                                                     trigger: triggerState.trigger,
                                                     setTrigger: triggerState.setTrigger
                                                 }}
+                                                contextValue={contextValue}
                                             />
                                         )
                                     })
@@ -109,7 +103,7 @@ export default function ForTestCode({ buttons, insertDataState, inputRef, trigge
                         )
                     })
                     : null}
-            </tbody> */}
+            </tbody>
         </NumpadLayout>
     )
 }
@@ -119,24 +113,22 @@ interface NumpadButtonsProps {
     inputRef: React.MutableRefObject<HTMLInputElement>,
     positionIndex: number,
     padButtonNumbers: any[],
-    insertDataState: {
-        data: number,
-        setter: React.Dispatch<React.SetStateAction<number>>,
-    },
     triggerState: {
         trigger: boolean,
         setTrigger: React.Dispatch<React.SetStateAction<boolean>>,
     }
+    contextValue: ContextValue
 }
 
-function NumpadButtons({ svg, inputRef, positionIndex, padButtonNumbers, insertDataState, triggerState }: NumpadButtonsProps) {
+function NumpadButtons({ svg, inputRef, positionIndex, padButtonNumbers, triggerState, contextValue }: NumpadButtonsProps) {
+
     return (
         <ButtonContainer
             className={`key-pad-buttons`}
             key={Math.random()}>
             <Buttons
                 onMouseDown={() => {
-                    if (insertDataState.data < 6) {
+                    if (contextValue.data.length < 6) {
                         let inputValue: any = 0;
                         switch (padButtonNumbers[positionIndex]) {
                             case 10:
@@ -152,10 +144,9 @@ function NumpadButtons({ svg, inputRef, positionIndex, padButtonNumbers, insertD
                                 inputValue = padButtonNumbers[positionIndex];
                                 break;
                         }
-
                         if (typeof inputValue !== "string") {
                             inputRef.current.value += inputValue;
-                            insertDataState.setter(insertDataState.data + 1);
+                            contextValue.setter.length(contextValue.data.length + 1);
                         } else if (inputValue === "shuffle") {
                             triggerState.setTrigger(!triggerState.trigger)
                         }

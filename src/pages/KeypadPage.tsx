@@ -34,7 +34,7 @@ export default function KeypadPage() {
         const keypadArea = document.getElementById("keypad-page-area");
 
         if (!keypadArea.contains(currTarget)) {
-            keypad.setFocusStatus(status => {
+            keypad.setter.focusing(status => {
                 status["confirm"] = false;
                 status["insert"] = false;
                 return status

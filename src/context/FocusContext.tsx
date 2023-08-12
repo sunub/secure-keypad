@@ -5,18 +5,29 @@ type InputStatus = {
     confirm: boolean,
 }
 
-type ContextValue = {
-    focusStatus: InputStatus,
-    setFocusStatus: React.Dispatch<React.SetStateAction<InputStatus>>,
-}
-
 export const FocusContext = React.createContext<ContextValue>(null)
 
 export default function FocusProvider({ children }: { children: React.ReactNode }) {
     const [focusStatus, setFocusStatus] = React.useState<InputStatus>({ insert: false, confirm: false });
+    const [dataLength, setDataLength] = React.useState(0);
+
+    const contextValue = {
+        data: {
+            focusing: focusStatus,
+            length: dataLength,
+        },
+        setter: {
+            focusing: setFocusStatus,
+            length: setDataLength,
+        }
+    }
+
+    React.useEffect(() => {
+        console.log(dataLength)
+    }, [dataLength])
 
     return (
-        <FocusContext.Provider value={{ focusStatus, setFocusStatus }}>
+        <FocusContext.Provider value={contextValue}>
             {children}
         </FocusContext.Provider>
     )

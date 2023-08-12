@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 import Input from "../Input"
-import Pads from "../KeyLayout/index"
+import PadLayout from "../KeyLayout/index"
 import { styled } from "styled-components"
 import { FocusContext } from "@/context/FocusContext"
 import Spacer from "../Spacer"
@@ -19,21 +19,27 @@ interface KeypadProps {
 export default function Keypad({ uses, label, text, triggerState }: KeypadProps) {
     const inputRef = React.useRef<HTMLInputElement>(null);
     const keypad = React.useContext(FocusContext);
+
     const id = uses === "insert"
         ? "keypad__insert--input"
         : "keypad__confirm--input";
 
     return (
         <>
-            <Input label={label} id={id} bottomText={keypad.focusStatus[uses] ? text : null}>
-                <Input.TextField keypad={keypad} id={id} triggerState={triggerState} ref={inputRef} />
+            <Input label={label} id={id} bottomText={keypad.data.focusing[uses] ? text : null}>
+                <Input.TextField
+                    id={id}
+                    contextValue={keypad}
+                    triggerState={triggerState}
+                    ref={inputRef} />
             </Input>
             <Spacer size={24} />
             {/* <Pads uses={uses} keypad={keypad} triggerState={triggerState} inputRef={inputRef} /> */}
-            {keypad.focusStatus[uses]
-                ? <Pads
+            {keypad.data.focusing[uses]
+                ? <PadLayout
                     uses={uses}
                     inputRef={inputRef}
+                    contextValue={keypad}
                     keypad={keypad}
                     triggerState={triggerState} />
                 : null}
