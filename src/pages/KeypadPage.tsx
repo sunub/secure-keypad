@@ -5,7 +5,9 @@ import Spacer from "@/components/Spacer"
 import { styled } from "styled-components"
 import { FocusContext } from "@/context/FocusContext"
 import { z } from "zod"
+import { http } from "@/utils/http"
 import { submitPassword } from "./remotes"
+import axios from "axios"
 
 const Section = styled.section`
     display: flex;
@@ -26,12 +28,6 @@ const Container = styled.div`
 const ConfirmBtn = styled.button`
     
 `
-
-const KeypadInputResultSchema = z.object({
-    uid: z.string(),
-    coords: z.array(z.object({ x: z.number(), y: z.number() })),
-});
-
 
 export default function KeypadPage() {
     const keypad = React.useContext(FocusContext);
@@ -78,7 +74,6 @@ export default function KeypadPage() {
             </Section>
             <ConfirmBtn
                 onClick={() => {
-                    console.log(32)
                     // const c = {
                     //     pas: a,
                     //     con: b
@@ -100,25 +95,30 @@ export default function KeypadPage() {
                     //     .parse(req.body);
 
                     async function sendDataToServer() {
+                        type KeypadInputResult = {
+                            uid: string;
+                            coords: Array<{ x: number; y: number }>;
+                        };
 
-                        const a = {
+                        const KeypadInputResultSchema = z.object({
+                            uid: z.string(),
+                            coords: z.array(
+                                z.object({
+                                    x: z.number(),
+                                    y: z.number(),
+                                })
+                            ),
+                        });
+
+                        const a = KeypadInputResultSchema.parse({
                             uid: "HI",
-                            coords: [
-                                { x: 1, y: 2 },
-                                { x: 3, y: 2 },
-                                { x: 1, y: 2 },
-                            ]
-                        }
-                        const b = {
+                            coords: [{ x: 3, y: 4 }]
+                        })
+                        const b = KeypadInputResultSchema.parse({
                             uid: "HELLO",
-                            coords: [
-                                { x: 2, y: 2 },
-                                { x: 3, y: 2 },
-                                { x: 1, y: 2 },
-                            ]
-                        }
+                            coords: [{ x: 3, y: 4 }]
+                        })
                         const result = await submitPassword(a, b);
-                        console.log(result);
                     }
                     sendDataToServer()
                 }}>완료</ConfirmBtn>

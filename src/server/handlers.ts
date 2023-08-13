@@ -1,5 +1,6 @@
 import { rest } from "msw";
 import { createKeypadResponse } from "@/utils/pads";
+import { z } from "zod";
 
 const keypadResponseMap = new Map<string, CreateKeypadResponse>();
 
@@ -18,13 +19,27 @@ const createKeypad: Parameters<typeof rest.post>[1] = (_, res, ctx) => {
 	return res(ctx.status(200), ctx.json(keypadResponse));
 };
 
-// const KeypadInputResultSchema = z.object({
-// 	uid: z.string(),
-// 	coords: z.array(z.object({ x: z.number(), y: z.number() })),
-// });
+const KeypadInputResultSchema = z.object({
+	uid: z.string(),
+	coords: z.array(
+		z.object({
+			x: z.number(),
+			y: z.number(),
+		})
+	),
+});
 
 const submitPassword: Parameters<typeof rest.post>[1] = (req, res, ctx) => {
-	return res(ctx.status(200), ctx.json(keypadResponseMap));
+	const { password, confirmPassword } = z
+		.object({
+			password: KeypadInputResultSchema,
+			confirmPassword: KeypadInputResultSchema,
+		})
+		.parse(req.body);
+
+	const a = ["1", "2"];
+
+	return res(ctx.status(200), ctx.text(a.join("")));
 	// console.log(req);
 	// const { password, confirmPassword } = z
 	// 	.object({
