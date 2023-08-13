@@ -2,16 +2,20 @@ import { FocusContext } from "@/context/FocusContext";
 import React from "react";
 
 interface FunctionPadProps {
-    uses: string;
-    set: React.Dispatch<React.SetStateAction<InputStatus>>;
-    inputRef: React.MutableRefObject<HTMLInputElement>;
+    uses: string,
+    uid: string,
+    inputRef: React.MutableRefObject<HTMLInputElement>,
     triggerState: {
         trigger: boolean,
         setTrigger: React.Dispatch<React.SetStateAction<boolean>>,
     };
+    coords: {
+        data: number[][],
+        setter: React.Dispatch<React.SetStateAction<number[][]>>,
+    }
 }
 
-export default function FunctionKeypad({ uses, set, inputRef, triggerState }: FunctionPadProps) {
+export default function FunctionKeypad({ uid, uses, inputRef, triggerState, coords }: FunctionPadProps) {
     const keypad = React.useContext(FocusContext);
 
     return (
@@ -21,13 +25,23 @@ export default function FunctionKeypad({ uses, set, inputRef, triggerState }: Fu
                     if (keypad.data.length < 6) {
                         inputRef.current.value = "";
                     }
-                    keypad.setter.length(0);
+                    if (keypad.data.length === 6) {
+                        keypad.setter(value => {
+                            value.inputResult[uses].uid = uid;
+                            value.inputResult[uses].coords = coords.data
+                            return value
+                        })
+                    }
 
-                    triggerState.setTrigger(!triggerState.trigger)
-                    set(status => {
-                        status[uses] = false;
-                        return status
+
+                    keypad.setter(value => {
+                        value.length = 0
+                        value.focusing[uses] = false
+                        return value
                     })
+
+                    coords.setter([])
+                    triggerState.setTrigger(!triggerState.trigger)
                 }}
             >
                 확인
@@ -47,6 +61,16 @@ export default function FunctionKeypad({ uses, set, inputRef, triggerState }: Fu
                     className="material-symbols-outlined">
                     backspace
                 </span>
+            </button>
+            <button
+                onClick={() => {
+                    inputRef.current.value = ""
+                    keypad.setter(value => {
+                        value.length = 0;
+                        return value
+                    })
+                }}>
+                전체삭제
             </button>
         </div>
     )

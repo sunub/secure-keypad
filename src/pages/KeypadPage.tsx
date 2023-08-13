@@ -4,7 +4,7 @@ import Keypad from "@components/Keypad/Keypad"
 import Spacer from "@/components/Spacer"
 import { styled } from "styled-components"
 import { FocusContext } from "@/context/FocusContext"
-import { http } from "@/utils/http"
+import { z } from "zod"
 import { submitPassword } from "./remotes"
 
 const Section = styled.section`
@@ -27,6 +27,12 @@ const ConfirmBtn = styled.button`
     
 `
 
+const KeypadInputResultSchema = z.object({
+    uid: z.string(),
+    coords: z.array(z.object({ x: z.number(), y: z.number() })),
+});
+
+
 export default function KeypadPage() {
     const keypad = React.useContext(FocusContext);
     const [trigger, setTrigger] = React.useState(false)
@@ -36,11 +42,11 @@ export default function KeypadPage() {
         const keypadArea = document.getElementById("keypad-page-area");
 
         if (!keypadArea.contains(currTarget)) {
-            keypad.setter.focusing(status => {
-                status["confirm"] = false;
-                status["insert"] = false;
-                return status
-            });
+            keypad.setter(value => {
+                value.focusing["confirm"] = false;
+                value.focusing["insert"] = false;
+                return value
+            })
             setTrigger(!trigger);
         }
     }
@@ -72,9 +78,49 @@ export default function KeypadPage() {
             </Section>
             <ConfirmBtn
                 onClick={() => {
-                    const insert = document.querySelector("#keypad__insert--input") as HTMLInputElement;
-                    const confirm = document.querySelector("#keypad__confirm--input") as HTMLInputElement;
+                    console.log(32)
+                    // const c = {
+                    //     pas: a,
+                    //     con: b
+                    // };
+                    // console.log(KeypadInputResultSchema)
 
+                    // const { pas, con } = z.object({
+                    //     pas: KeypadInputResultSchema,
+                    //     con: KeypadInputResultSchema
+                    // }).parse(c)
+                    // console.log(pas)
+                    // console.log(con)
+
+                    // const { password, confirmPassword } = z
+                    //     .object({
+                    //         password: KeypadInputResultSchema,
+                    //         confirmPassword: KeypadInputResultSchema,
+                    //     })
+                    //     .parse(req.body);
+
+                    async function sendDataToServer() {
+
+                        const a = {
+                            uid: "HI",
+                            coords: [
+                                { x: 1, y: 2 },
+                                { x: 3, y: 2 },
+                                { x: 1, y: 2 },
+                            ]
+                        }
+                        const b = {
+                            uid: "HELLO",
+                            coords: [
+                                { x: 2, y: 2 },
+                                { x: 3, y: 2 },
+                                { x: 1, y: 2 },
+                            ]
+                        }
+                        const result = await submitPassword(a, b);
+                        console.log(result);
+                    }
+                    sendDataToServer()
                 }}>완료</ConfirmBtn>
         </Container>
     )

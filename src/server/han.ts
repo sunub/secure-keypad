@@ -2,14 +2,14 @@ import { rest } from "msw";
 import { createKeypadResponse } from "@/utils/pads";
 import { z } from "zod";
 
+const keypadResponseMap = new Map<string, CreateKeypadResponse>();
+
 export const handlers = () => {
 	return [
 		rest.post("/api/keypad", keypadResolver),
 		rest.post("/api/password", passwordResolver),
 	];
 };
-
-const keypadResponseMap = new Map<string, CreateKeypadResponse>();
 
 const keypadResolver: Parameters<typeof rest.post>[1] = (_, res, ctx) => {
 	const keypadResponse = createKeypadResponse();
@@ -35,4 +35,8 @@ const passwordResolver: Parameters<typeof rest.post>[1] = (_, res, ctx) => {
 	if (password.uid === confirmPassword.uid) {
 		return res(ctx.status(404, "You must use two different keypads"));
 	}
+
+	const passwordLength = password.coords.length;
+	const confirmLength = password.coords.length;
+	console.log(passwordLength, confirmLength);
 };

@@ -117,18 +117,18 @@ describe('App easy', () => {
     expect((await screen.findByLabelText<HTMLInputElement>(`비밀번호`)).value).toHaveLength(0);
   });
 
-  // test('"전체삭제" 버튼을 누르면 값이 모두 삭제된다', async () => {
-  //   render(<App />);
+  test('"전체삭제" 버튼을 누르면 값이 모두 삭제된다', async () => {
+    render(<App />);
 
-  //   userEvent.click(await screen.findByLabelText<HTMLInputElement>(`비밀번호`));
+    userEvent.click(await screen.findByLabelText<HTMLInputElement>(`비밀번호`));
 
-  //   userEvent.click(await screen.findByTestId(1));
-  //   userEvent.click(await screen.findByTestId(1));
-  //   expect((await screen.findByLabelText<HTMLInputElement>(`비밀번호`)).value).toHaveLength(2);
+    await clickByNumOfCount(2);
 
-  //   userEvent.click(await screen.findByText('전체삭제'));
-  //   expect((await screen.findByLabelText<HTMLInputElement>(`비밀번호`)).value).toHaveLength(0);
-  // });
+    expect((await screen.findByLabelText<HTMLInputElement>(`비밀번호`)).value).toHaveLength(2);
+
+    await userEvent.click(await screen.findByText('전체삭제'));
+    expect((await screen.findByLabelText<HTMLInputElement>(`비밀번호`)).value).toHaveLength(0);
+  });
 
   // test('완료 버튼을 누르면 입력된 값을 서버로 전송한다 - 1', async () => {
   //   const spyOnSubmit = jest.spyOn(remotes, 'submitPassword');

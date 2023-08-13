@@ -5,13 +5,16 @@ import { FocusContext } from "@/context/FocusContext";
 
 
 interface NumKeypadProps {
-    buttons: Keypad;
+    keypad: Keypad;
     inputRef: React.MutableRefObject<HTMLInputElement>;
     triggerState: {
         trigger: boolean,
         setTrigger: React.Dispatch<React.SetStateAction<boolean>>,
     }
-    contextValue: ContextValue
+    coords: {
+        data: any[],
+        setter: React.Dispatch<React.SetStateAction<any[]>>,
+    },
 }
 
 
@@ -52,12 +55,15 @@ const Buttons = styled.button`
     }
 `
 
-export default function ForTestCode({ buttons, inputRef, triggerState, contextValue }: NumKeypadProps) {
+export default function ForTestCode({ coords, keypad, inputRef, triggerState }: NumKeypadProps) {
     let padPositionIndex = -1;
     const [padNumber, setPadNumber] = React.useState<any[]>(Array.from({ length: 12 }, () => 0));
+    const buttons = keypad.svgGrid
+    const contextValue = React.useContext(FocusContext);
+
     React.useEffect(() => {
         if (buttons) {
-            const shuffledSVG = buttons.svgGrid.flat(1);
+            const shuffledSVG = buttons.flat(1);
 
             SVG_HTMLS.map((svg, value) => {
                 for (let i = 0; i < shuffledSVG.length; i++) {
@@ -76,7 +82,7 @@ export default function ForTestCode({ buttons, inputRef, triggerState, contextVa
         <NumpadLayout>
             <tbody>
                 {buttons
-                    ? buttons.svgGrid.map(col => {
+                    ? buttons.map(col => {
                         return (
                             <PadLayout
                                 key={Math.random() * Number.MAX_VALUE}>
@@ -85,6 +91,7 @@ export default function ForTestCode({ buttons, inputRef, triggerState, contextVa
                                         padPositionIndex += 1
                                         return (
                                             <NumpadButtons
+                                                coords={coords}
                                                 key={Math.random() * Number.MAX_VALUE}
                                                 svg={svg}
                                                 inputRef={inputRef}
@@ -117,10 +124,14 @@ interface NumpadButtonsProps {
         trigger: boolean,
         setTrigger: React.Dispatch<React.SetStateAction<boolean>>,
     }
-    contextValue: ContextValue
+    contextValue: ContextValueSetting
+    coords: {
+        data: any[],
+        setter: React.Dispatch<React.SetStateAction<any[]>>,
+    },
 }
 
-function NumpadButtons({ svg, inputRef, positionIndex, padButtonNumbers, triggerState, contextValue }: NumpadButtonsProps) {
+function NumpadButtons({ coords, svg, inputRef, positionIndex, padButtonNumbers, triggerState, contextValue }: NumpadButtonsProps) {
 
     return (
         <ButtonContainer
@@ -128,6 +139,9 @@ function NumpadButtons({ svg, inputRef, positionIndex, padButtonNumbers, trigger
             key={Math.random()}>
             <Buttons
                 onMouseDown={() => {
+                    const row = Math.round((positionIndex + 1) / 4);
+                    const col = Math.floor(positionIndex % 3);
+
                     if (contextValue.data.length < 6) {
                         let inputValue: any = 0;
                         switch (padButtonNumbers[positionIndex]) {
@@ -146,7 +160,21 @@ function NumpadButtons({ svg, inputRef, positionIndex, padButtonNumbers, trigger
                         }
                         if (typeof inputValue !== "string") {
                             inputRef.current.value += inputValue;
-                            contextValue.setter.length(contextValue.data.length + 1);
+
+                            contextValue.setter(value => {
+                                value.length += 1;
+                                return value
+                            })
+
+                            coords.setter(coord => {
+                                const currCoord = {
+                                    x: row,
+                                    y: col
+                                }
+
+                                const newCoord = [...coord, currCoord];
+                                return newCoord
+                            })
                         } else if (inputValue === "shuffle") {
                             triggerState.setTrigger(!triggerState.trigger)
                         }

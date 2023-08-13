@@ -42,13 +42,24 @@ interface CreateKeypadResponse {
 	keypad: Keypad;
 }
 
+interface InputResultType {
+	insert: {
+		uid: string;
+		coords: Array<{ x: number; y: number }>;
+	};
+	confirm: {
+		uid: string;
+		coords: Array<{ x: number; y: number }>;
+	};
+}
+
 type ContextValue = {
-	data: {
-		focusing: InputStatus;
-		length: number;
-	};
-	setter: {
-		focusing: React.Dispatch<React.SetStateAction<InputStatus>>;
-		length: React.Dispatch<React.SetStateAction<number>>;
-	};
+	focusing: InputStatus;
+	length: number;
+	inputResult: InputResultType;
+};
+
+type ContextValueSetting = {
+	data: ContextValue;
+	setter: React.Dispatch<React.SetStateAction<ContextValue>>;
 };

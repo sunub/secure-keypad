@@ -33,7 +33,6 @@ interface InputProps extends HTMLAttributes<HTMLInputElement> {
         trigger: boolean,
         setTrigger: React.Dispatch<React.SetStateAction<boolean>>,
     }
-    contextValue: ContextValue
 }
 
 const PasswordInput = styled.input`
@@ -45,17 +44,21 @@ const PasswordInput = styled.input`
 Input.TextField = React.forwardRef(function (props: InputProps, ref: React.MutableRefObject<HTMLInputElement>) {
     const uses = props.id.includes("insert") ? "insert" : "confirm";
     const otherUses = uses === "insert" ? "confirm" : "insert";
+    const keypad = React.useContext(FocusContext)
 
     return (
         <PasswordInput
             onKeyDown={(e) => {
                 if (e.code === "Backspace") {
                     const currValue = ref.current.value;
-                    const currLength = props.contextValue.data.length;
+                    const currLength = keypad.data.length;
                     const deletedValue = currValue.slice(0, currValue.length - 1);
                     ref.current.value = deletedValue;
                     currLength > 0
-                        ? props.contextValue.setter.length(currLength - 1)
+                        ? keypad.setter(value => {
+                            value.length -= 1;
+                            return value
+                        })
                         : null;
                 }
             }}
@@ -63,22 +66,22 @@ Input.TextField = React.forwardRef(function (props: InputProps, ref: React.Mutab
             id={props.id}
             ref={ref}
             onFocus={() => {
-                const currOpen = props.contextValue.data.focusing[uses];
-                const otherOpen = props.contextValue.data.focusing[otherUses];
+                const currOpen = keypad.data.focusing[uses];
+                const otherOpen = keypad.data.focusing[otherUses];
 
                 if (!currOpen && !otherOpen) {
-                    props.contextValue.setter.focusing(status => {
-                        status[uses] = !currOpen;
-                        props.triggerState.setTrigger(!props.triggerState.trigger)
-                        return status
+                    keypad.setter(value => {
+                        value.focusing[uses] = !currOpen;
+                        return value
                     })
+                    props.triggerState.setTrigger(!props.triggerState.trigger)
                 } else if (!currOpen) {
-                    props.contextValue.setter.focusing(status => {
-                        status[uses] = !currOpen;
-                        status[otherUses] = !otherOpen;
-                        props.triggerState.setTrigger(!props.triggerState.trigger)
-                        return status
+                    keypad.setter(value => {
+                        value.focusing[uses] = !currOpen;
+                        value.focusing[otherUses] = !otherOpen;
+                        return value
                     })
+                    props.triggerState.setTrigger(!props.triggerState.trigger)
                 }
 
             }}

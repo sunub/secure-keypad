@@ -2,13 +2,12 @@ import React, { useEffect } from "react"
 import FunctionKeypad from "./FunctionKeypad/index"
 import { styled } from "styled-components"
 import ForTestCode from "./NumKeypad/ForTestCode"
+import { createKeypad } from "@/pages/remotes"
 import { http } from "@/utils/http"
 
 interface KeypadProps {
     uses: string;
-    keypad?: ContextValue;
     inputRef: React.MutableRefObject<HTMLInputElement>;
-    contextValue: ContextValue,
     triggerState: {
         trigger: boolean,
         setTrigger: React.Dispatch<React.SetStateAction<boolean>>,
@@ -33,14 +32,18 @@ const PadsLayout = styled.div`
     flex-direction: column;
 `
 
-export default function PadLayout({ uses, keypad, triggerState, inputRef, contextValue }: KeypadProps) {
-    const id = uses === "insert" ? "keypad__insert--keypad" : "keypad__confirm--keypad";
+export default function PadLayout({ uses, triggerState, inputRef }: KeypadProps) {
     const [padButtons, setPadButtons] = React.useState<CreateKeypadResponse | any>(null);
+    const [coords, setCoords] = React.useState<number[][]>([]);
+
+    let uid: string;
+    const id = uses === "insert" ? "keypad__insert--keypad" : "keypad__confirm--keypad";
 
     useEffect(() => {
         async function get() {
-            const responseKeypad = await http.post("/api/keypad");
+            const responseKeypad = await createKeypad();
 
+            uid = responseKeypad['uid'];
             setPadButtons(responseKeypad);
         }
         get()
@@ -53,11 +56,19 @@ export default function PadLayout({ uses, keypad, triggerState, inputRef, contex
             <PadsLayout >
                 {
                     padButtons
-                        ? <ForTestCode
-                            buttons={padButtons.keypad}
-                            triggerState={triggerState}
-                            contextValue={contextValue}
-                            inputRef={inputRef} />
+                        ? (<>
+                            <ForTestCode
+                                keypad={padButtons.keypad}
+                                triggerState={triggerState}
+                                coords={{ data: coords, setter: setCoords }}
+                                inputRef={inputRef} />
+                            <FunctionKeypad
+                                uid={padButtons.uid}
+                                uses={uses}
+                                inputRef={inputRef}
+                                coords={{ data: coords, setter: setCoords }}
+                                triggerState={triggerState} />
+                        </>)
                         : null
                 }
 
@@ -66,11 +77,6 @@ export default function PadLayout({ uses, keypad, triggerState, inputRef, contex
                     insertDataState={{ data: insertedData, setter: setInsertedData }}
                     triggerState={triggerState}
                     inputRef={inputRef} /> */}
-                <FunctionKeypad
-                    uses={uses}
-                    inputRef={inputRef}
-                    set={keypad.setter.focusing}
-                    triggerState={triggerState} />
             </PadsLayout>
         </PadsContainer>
     )
