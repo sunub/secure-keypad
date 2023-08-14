@@ -3,7 +3,7 @@ import FunctionKeypad from "./FunctionKeypad/index"
 import { styled } from "styled-components"
 import ForTestCode from "./NumKeypad/ForTestCode"
 import { createKeypad } from "@/pages/remotes"
-import { http } from "@/utils/http"
+import { FocusContext } from "@/context/FocusContext"
 
 interface KeypadProps {
     uses: string;
@@ -35,19 +35,29 @@ const PadsLayout = styled.div`
 export default function PadLayout({ uses, triggerState, inputRef }: KeypadProps) {
     const [padButtons, setPadButtons] = React.useState<CreateKeypadResponse | any>(null);
     const [coords, setCoords] = React.useState<number[][]>([]);
+    const [uid, setUid] = React.useState<string>(null)
+    const keypad = React.useContext(FocusContext);
 
-    let uid: string;
     const id = uses === "insert" ? "keypad__insert--keypad" : "keypad__confirm--keypad";
 
     useEffect(() => {
-        async function get() {
+        (async () => {
             const responseKeypad = await createKeypad();
 
-            uid = responseKeypad['uid'];
+            setUid(responseKeypad['uid'])
             setPadButtons(responseKeypad);
-        }
-        get()
+        })()
     }, [triggerState.trigger])
+
+    useEffect(() => {
+        if (coords.length > 0) {
+            keypad.setter(v => {
+                v.inputResult[uses].uid = uid;
+                v.inputResult[uses].coords = coords
+                return v
+            })
+        }
+    }, [coords])
 
     return (
         <PadsContainer

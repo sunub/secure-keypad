@@ -4,10 +4,7 @@ import Keypad from "@components/Keypad/Keypad"
 import Spacer from "@/components/Spacer"
 import { styled } from "styled-components"
 import { FocusContext } from "@/context/FocusContext"
-import { z } from "zod"
-import { http } from "@/utils/http"
 import { submitPassword } from "./remotes"
-import axios from "axios"
 
 const Section = styled.section`
     display: flex;
@@ -74,53 +71,19 @@ export default function KeypadPage() {
             </Section>
             <ConfirmBtn
                 onClick={() => {
-                    // const c = {
-                    //     pas: a,
-                    //     con: b
-                    // };
-                    // console.log(KeypadInputResultSchema)
+                    (async () => {
+                        const password = keypad.data.inputResult.insert;
+                        const confirmPassword = keypad.data.inputResult.confirm;
 
-                    // const { pas, con } = z.object({
-                    //     pas: KeypadInputResultSchema,
-                    //     con: KeypadInputResultSchema
-                    // }).parse(c)
-                    // console.log(pas)
-                    // console.log(con)
-
-                    // const { password, confirmPassword } = z
-                    //     .object({
-                    //         password: KeypadInputResultSchema,
-                    //         confirmPassword: KeypadInputResultSchema,
-                    //     })
-                    //     .parse(req.body);
-
-                    async function sendDataToServer() {
-                        type KeypadInputResult = {
-                            uid: string;
-                            coords: Array<{ x: number; y: number }>;
-                        };
-
-                        const KeypadInputResultSchema = z.object({
-                            uid: z.string(),
-                            coords: z.array(
-                                z.object({
-                                    x: z.number(),
-                                    y: z.number(),
-                                })
-                            ),
-                        });
-
-                        const a = KeypadInputResultSchema.parse({
-                            uid: "HI",
-                            coords: [{ x: 3, y: 4 }]
-                        })
-                        const b = KeypadInputResultSchema.parse({
-                            uid: "HELLO",
-                            coords: [{ x: 3, y: 4 }]
-                        })
-                        const result = await submitPassword(a, b);
-                    }
-                    sendDataToServer()
+                        if (password.coords.length !== 6 || confirmPassword.coords.length !== 6) {
+                            console.log("비밀번호 자리수는 6자리여야 합니다!")
+                            return
+                        }
+                        const result = await submitPassword(password, confirmPassword);
+                        result
+                            ? console.log(`비밀번호 확인 성공!`)
+                            : console.log('비밀번호 확인 실패');
+                    })()
                 }}>완료</ConfirmBtn>
         </Container>
     )

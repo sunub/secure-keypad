@@ -40,6 +40,8 @@ export default function FunctionKeypad({ uid, uses, inputRef, triggerState, coor
                         return value
                     })
 
+                    console.log(keypad.data.inputResult);
+
                     coords.setter([])
                     triggerState.setTrigger(!triggerState.trigger)
                 }}

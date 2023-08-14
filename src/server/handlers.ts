@@ -4,10 +4,20 @@ import { z } from "zod";
 
 const keypadResponseMap = new Map<string, CreateKeypadResponse>();
 
+type KeypadInputResult = {
+	uid: string;
+	coords: Array<{ x: number; y: number }>;
+};
+
+interface RequestParam {
+	password: KeypadInputResult;
+	confirmPassword: KeypadInputResult;
+}
+
 export function handlers() {
 	return [
 		rest.post("/api/keypad", createKeypad),
-		rest.post("/api/password", submitPassword),
+		rest.post<RequestParam>("/api/password", submitPassword),
 	];
 }
 
@@ -29,7 +39,11 @@ const KeypadInputResultSchema = z.object({
 	),
 });
 
-const submitPassword: Parameters<typeof rest.post>[1] = (req, res, ctx) => {
+const submitPassword: Parameters<typeof rest.post>[1] = async (
+	req,
+	res,
+	ctx
+) => {
 	const { password, confirmPassword } = z
 		.object({
 			password: KeypadInputResultSchema,
@@ -37,60 +51,52 @@ const submitPassword: Parameters<typeof rest.post>[1] = (req, res, ctx) => {
 		})
 		.parse(req.body);
 
-	const a = ["1", "2"];
+	if (password.uid === confirmPassword.uid) {
+		return res(ctx.status(400, "You must use two different keypads"));
+	}
 
-	return res(ctx.status(200), ctx.text(a.join("")));
-	// console.log(req);
-	// const { password, confirmPassword } = z
-	// 	.object({
-	// 		password: KeypadInputResultSchema,
-	// 		confirmPassword: KeypadInputResultSchema,
-	// 	})
-	// 	.parse(ctx.body);
+	const passwordKeypad = keypadResponseMap.get(password.uid);
+	const confirmPasswordKeypad = keypadResponseMap.get(confirmPassword.uid);
 
-	// if (password.uid === confirmPassword.uid) {
-	// 	return res(ctx.status(400, "You must use two different keypads"));
-	// }
+	if (passwordKeypad == null || confirmPasswordKeypad == null) {
+		return res(ctx.status(404, "Keypad not found"));
+	}
 
-	// const passwordKeypad = keypadResponseMap.get(password.uid);
-	// const confirmPasswordKeypad = keypadResponseMap.get(confirmPassword.uid);
+	try {
+		if (
+			password.coords.length !== 6 ||
+			confirmPassword.coords.length !== 6
+		) {
+			return res(
+				ctx.status(400, "Password must be entered as 6 characters")
+			);
+		}
 
-	// if (passwordKeypad == null || confirmPasswordKeypad == null) {
-	// 	return res(ctx.status(404, "Keypad not found"));
-	// }
+		const passwordKeys = password.coords.map(({ x, y }) =>
+			extractTestIdFromSVG(passwordKeypad.keypad.svgGrid[x][y])
+		);
+		const confirmPasswordKeys = confirmPassword.coords.map(({ x, y }) =>
+			extractTestIdFromSVG(confirmPasswordKeypad.keypad.svgGrid[x][y])
+		);
 
-	// try {
-	// 	if (
-	// 		password.coords.length !== 6 ||
-	// 		confirmPassword.coords.length !== 6
-	// 	) {
-	// 		return res(
-	// 			ctx.status(400, "Password must be entered as 6 characters")
-	// 		);
-	// 	}
+		console.log(passwordKeys);
+		console.log(confirmPasswordKeys);
 
-	// 	const passwordKeys = password.coords.map(({ x, y }) =>
-	// 		extractTestIdFromSVG(passwordKeypad.keypad.svgGrid[x][y])
-	// 	);
-	// 	const confirmPasswordKeys = confirmPassword.coords.map(({ x, y }) =>
-	// 		extractTestIdFromSVG(confirmPasswordKeypad.keypad.svgGrid[x][y])
-	// 	);
+		if (
+			passwordKeys.includes("blank") ||
+			confirmPasswordKeys.includes("blank")
+		) {
+			return res(ctx.status(400, "You can't enter a blank"));
+		}
 
-	// 	if (
-	// 		passwordKeys.includes("blank") ||
-	// 		confirmPasswordKeys.includes("blank")
-	// 	) {
-	// 		return res(ctx.status(400, "You can't enter a blank"));
-	// 	}
+		if (passwordKeys.join("") !== confirmPasswordKeys.join("")) {
+			return res(ctx.status(400, "Passwords do not match"));
+		}
 
-	// 	if (passwordKeys.join("") !== confirmPasswordKeys.join("")) {
-	// 		return res(ctx.status(400, "Passwords do not match"));
-	// 	}
-
-	// 	return res(ctx.status(200), ctx.text(passwordKeys.join("")));
-	// } catch {
-	// 	return res(ctx.status(400, "input decryption failed"));
-	// }
+		return res(ctx.status(200), ctx.text(passwordKeys.join("")));
+	} catch {
+		return res(ctx.status(400, "input decryption failed"));
+	}
 };
 
 function extractTestIdFromSVG(svgElement: string): string {

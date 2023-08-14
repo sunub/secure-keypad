@@ -139,7 +139,7 @@ function NumpadButtons({ coords, svg, inputRef, positionIndex, padButtonNumbers,
             key={Math.random()}>
             <Buttons
                 onMouseDown={() => {
-                    const row = Math.round((positionIndex + 1) / 4);
+                    const row = Math.floor(positionIndex / 3);
                     const col = Math.floor(positionIndex % 3);
 
                     if (contextValue.data.length < 6) {

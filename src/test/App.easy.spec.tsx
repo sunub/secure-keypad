@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
-import * as remotes from '../pages/remotes';
+import * as remotes from "../pages/remotes";
 import { delay, mockConsoleError } from './utils';
 import { setupServer } from 'msw/node';
 import { handlers } from '@/server/handlers';
@@ -130,89 +130,90 @@ describe('App easy', () => {
     expect((await screen.findByLabelText<HTMLInputElement>(`비밀번호`)).value).toHaveLength(0);
   });
 
-  // test('완료 버튼을 누르면 입력된 값을 서버로 전송한다 - 1', async () => {
-  //   const spyOnSubmit = jest.spyOn(remotes, 'submitPassword');
 
-  //   render(<App />);
+  test('완료 버튼을 누르면 입력된 값을 서버로 전송한다 - 1', async () => {
+    const spyOnSubmit = jest.spyOn(remotes, 'submitPassword');
 
-  //   userEvent.click(await screen.findByLabelText<HTMLInputElement>(`비밀번호`));
+    render(<App />);
 
-  //   userEvent.click(await screen.findByTestId(1));
-  //   userEvent.click(await screen.findByTestId(2));
-  //   userEvent.click(await screen.findByTestId(3));
-  //   userEvent.click(await screen.findByTestId(4));
-  //   userEvent.click(await screen.findByTestId(5));
-  //   userEvent.click(await screen.findByTestId(6));
+    await userEvent.click(await screen.findByLabelText<HTMLInputElement>(`비밀번호`));
 
-  //   await delay(100);
+    await userEvent.click(await screen.findByTestId(1));
+    await userEvent.click(await screen.findByTestId(2));
+    await userEvent.click(await screen.findByTestId(3));
+    await userEvent.click(await screen.findByTestId(4));
+    await userEvent.click(await screen.findByTestId(5));
+    await userEvent.click(await screen.findByTestId(6));
 
-  //   userEvent.click(await screen.findByLabelText<HTMLInputElement>(`비밀번호 확인`));
+    await delay(100);
 
-  //   userEvent.click(await screen.findByTestId(1));
-  //   userEvent.click(await screen.findByTestId(2));
-  //   userEvent.click(await screen.findByTestId(3));
-  //   userEvent.click(await screen.findByTestId(4));
-  //   userEvent.click(await screen.findByTestId(5));
-  //   userEvent.click(await screen.findByTestId(6));
+    await userEvent.click(await screen.findByLabelText<HTMLInputElement>(`비밀번호 확인`));
 
-  //   await delay(100);
+    await userEvent.click(await screen.findByTestId(1));
+    await userEvent.click(await screen.findByTestId(2));
+    await userEvent.click(await screen.findByTestId(3));
+    await userEvent.click(await screen.findByTestId(4));
+    await userEvent.click(await screen.findByTestId(5));
+    await userEvent.click(await screen.findByTestId(6));
 
-  //   const button = await screen.findByText<HTMLButtonElement>(`완료`);
-  //   userEvent.click(button);
+    await delay(100);
 
-  //   const returnValue = await waitFor(() => spyOnSubmit.mock.results[0].value);
-  //   expect(returnValue.toString()).toEqual('123456');
-  // });
+    const button = await screen.findByText<HTMLButtonElement>(`완료`);
+    await userEvent.click(button);
 
-  // test('완료 버튼을 누르면 입력된 값을 서버로 전송한다 - 2', async () => {
-  //   const spyOnSubmit = jest.spyOn(remotes, 'submitPassword');
+    const returnValue = await waitFor(() => spyOnSubmit.mock.results[0].value);
+    expect(returnValue.toString()).toEqual('123456');
+  });
 
-  //   render(<App />);
+  test('완료 버튼을 누르면 입력된 값을 서버로 전송한다 - 2', async () => {
+    const spyOnSubmit = jest.spyOn(remotes, 'submitPassword');
 
-  //   userEvent.click(await screen.findByLabelText<HTMLInputElement>(`비밀번호`));
+    render(<App />);
 
-  //   userEvent.click(await screen.findByTestId(6));
-  //   userEvent.click(await screen.findByTestId(4));
-  //   userEvent.click(await screen.findByTestId(2));
-  //   userEvent.click(await screen.findByTestId(2));
-  //   userEvent.click(await screen.findByTestId(3));
-  //   userEvent.click(await screen.findByTestId(5));
+    await userEvent.click(await screen.findByLabelText<HTMLInputElement>(`비밀번호`));
 
-  //   await delay(100);
+    await userEvent.click(await screen.findByTestId(6));
+    await userEvent.click(await screen.findByTestId(4));
+    await userEvent.click(await screen.findByTestId(2));
+    await userEvent.click(await screen.findByTestId(2));
+    await userEvent.click(await screen.findByTestId(3));
+    await userEvent.click(await screen.findByTestId(5));
 
-  //   userEvent.click(await screen.findByLabelText<HTMLInputElement>(`비밀번호 확인`));
+    await delay(100);
 
-  //   userEvent.click(await screen.findByTestId(6));
-  //   userEvent.click(await screen.findByTestId(4));
-  //   userEvent.click(await screen.findByTestId(2));
-  //   userEvent.click(await screen.findByTestId(2));
-  //   userEvent.click(await screen.findByTestId(3));
-  //   userEvent.click(await screen.findByTestId(5));
+    await userEvent.click(await screen.findByLabelText<HTMLInputElement>(`비밀번호 확인`));
 
-  //   await delay(100);
+    await userEvent.click(await screen.findByTestId(6));
+    await userEvent.click(await screen.findByTestId(4));
+    await userEvent.click(await screen.findByTestId(2));
+    await userEvent.click(await screen.findByTestId(2));
+    await userEvent.click(await screen.findByTestId(3));
+    await userEvent.click(await screen.findByTestId(5));
 
-  //   const button = await screen.findByText<HTMLButtonElement>(`완료`);
-  //   userEvent.click(button);
+    await delay(100);
 
-  //   const returnValue = await waitFor(() => spyOnSubmit.mock.results[0].value);
-  //   expect(returnValue.toString()).toEqual('642235');
-  // });
+    const button = await screen.findByText<HTMLButtonElement>(`완료`);
+    await userEvent.click(button);
 
-  // test('6자리를 입력하지 않았으면 전송하지 않는다', async () => {
-  //   const spyOnSubmit = jest.spyOn(remotes, 'submitPassword');
+    const returnValue = await waitFor(() => spyOnSubmit.mock.results[0].value);
+    expect(returnValue.toString()).toEqual('642235');
+  });
 
-  //   render(<App />);
+  test('6자리를 입력하지 않았으면 전송하지 않는다', async () => {
+    const spyOnSubmit = jest.spyOn(remotes, 'submitPassword');
 
-  //   userEvent.click(await screen.findByLabelText<HTMLInputElement>(`비밀번호`));
+    render(<App />);
 
-  //   userEvent.click(await screen.findByTestId(6));
-  //   userEvent.click(await screen.findByTestId(4));
-  //   userEvent.click(await screen.findByTestId(2));
-  //   userEvent.click(await screen.findByTestId(2));
+    await userEvent.click(await screen.findByLabelText<HTMLInputElement>(`비밀번호`));
 
-  //   userEvent.click(await screen.findByText<HTMLButtonElement>(`완료`));
+    await userEvent.click(await screen.findByTestId(6));
+    await userEvent.click(await screen.findByTestId(4));
+    await userEvent.click(await screen.findByTestId(2));
+    await userEvent.click(await screen.findByTestId(2));
 
-  //   await delay(500);
-  //   expect(spyOnSubmit).not.toHaveBeenCalled();
-  // });
+    await userEvent.click(await screen.findByText<HTMLButtonElement>(`완료`));
+
+    await delay(500);
+    expect(spyOnSubmit).not.toHaveBeenCalled();
+  });
 });

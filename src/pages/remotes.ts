@@ -1,4 +1,5 @@
 import { http } from "../utils/http";
+import { z } from "zod";
 
 /** 키패드 데이터 생성 API
  * 요청과 응답 타입은 함수의 입출력 타입을 확인해주세요. */

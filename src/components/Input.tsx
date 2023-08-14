@@ -1,5 +1,5 @@
 import { FocusContext } from "@/context/FocusContext";
-import React, { HTMLAttributes, useState } from "react";
+import React, { HTMLAttributes, useEffect, useState } from "react";
 import { styled } from "styled-components";
 
 interface LabelProps extends HTMLAttributes<HTMLLabelElement> {
@@ -65,6 +65,7 @@ Input.TextField = React.forwardRef(function (props: InputProps, ref: React.Mutab
             readOnly
             id={props.id}
             ref={ref}
+            value={""}
             onFocus={() => {
                 const currOpen = keypad.data.focusing[uses];
                 const otherOpen = keypad.data.focusing[otherUses];
@@ -79,6 +80,7 @@ Input.TextField = React.forwardRef(function (props: InputProps, ref: React.Mutab
                     keypad.setter(value => {
                         value.focusing[uses] = !currOpen;
                         value.focusing[otherUses] = !otherOpen;
+                        value.length = 0;
                         return value
                     })
                     props.triggerState.setTrigger(!props.triggerState.trigger)
